@@ -125,6 +125,56 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Testimonials Section */}
+        <section id="testimonials" className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              What Our Users Say
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Real feedback from satisfied customers
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah Johnson",
+                role: "Photographer",
+                quote: "Picsetai transformed my portfolio photos from good to stunning. The AI enhancements are incredible!",
+                avatar: "https://picsum.photos/60/60?random=1"
+              },
+              {
+                name: "Michael Chen",
+                role: "E-commerce Manager",
+                quote: "The background removal feature saved me hours of editing time. Highly recommended!",
+                avatar: "https://picsum.photos/60/60?random=2"
+              },
+              {
+                name: "Emily Davis",
+                role: "Social Media Manager",
+                quote: "I love how easy it is to upscale my Instagram photos. The quality is amazing!",
+                avatar: "https://picsum.photos/60/60?random=3"
+              }
+            ].map((testimonial, index) => (
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                      <img src={testimonial.avatar} alt={testimonial.name} className="w-8 h-8 rounded-full" />
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{testimonial.name}</h3>
+                      <p className="text-gray-600">{testimonial.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 mb-4">{testimonial.quote}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
         {/* How It Works */}
         <section id="how-it-works" className="mb-20">
           <div className="text-center mb-12">
@@ -316,10 +366,9 @@ const Index = () => {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-gray-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
@@ -339,7 +388,7 @@ const Index = () => {
             
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Product</h4>
-              <ul className="space-y-3">
+              <ul className="space-y-2 text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">API</a></li>
@@ -349,7 +398,7 @@ const Index = () => {
             
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Company</h4>
-              <ul className="space-y-3">
+              <ul className="space-y-2 text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">About</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
@@ -358,18 +407,8 @@ const Index = () => {
             </div>
             
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Resources</h4>
-              <ul className="space-y-3">
-                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
-              </ul>
-            </div>
-            
-            <div>
               <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
-              <ul className="space-y-3">
+              <ul className="space-y-2 text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Cookies</a></li>
