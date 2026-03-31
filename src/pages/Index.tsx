@@ -7,9 +7,11 @@ import { Check } from "lucide-react";
 import NewsletterSignup from "@/components/newsletter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-purple-50">
@@ -36,7 +38,10 @@ const Index = () => {
                 {t("nav.pricing")}
               </a>
               <LanguageSwitcher />
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full">
+              <Button 
+                onClick={() => navigate("/enhancer")}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full"
+              >
                 {t("nav.getStarted")}
               </Button>
             </nav>
@@ -63,7 +68,11 @@ const Index = () => {
             {t("hero.description")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all">
+            <Button 
+              size="lg" 
+              onClick={() => navigate("/enhancer")}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all"
+            >
               {t("hero.startNow")}
             </Button>
             <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-lg border-2">
@@ -339,6 +348,7 @@ const Index = () => {
                     ))}
                   </ul>
                   <Button 
+                    onClick={() => navigate("/enhancer")}
                     className={`w-full ${plan.highlighted ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700' : 'bg-gray-900 hover:bg-gray-800'} text-white rounded-full`}
                   >
                     {t("pricing.getStarted")}
@@ -361,7 +371,11 @@ const Index = () => {
                 {t("cta.description")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 rounded-full px-8 py-6 text-lg shadow-xl">
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate("/enhancer")}
+                  className="bg-white text-blue-600 hover:bg-gray-100 rounded-full px-8 py-6 text-lg shadow-xl"
+                >
                   {t("cta.freeTrial")}
                 </Button>
                 <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg">
