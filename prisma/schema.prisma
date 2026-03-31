@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String           @id @default(cuid())
+  email              String?          @unique
+  username           String?
+  avatarUrl          String?
+  isAnonymous        Boolean          @default(true)
+  sessionId          String?
+  cloudinaryConfig   CloudinaryConfig?
+  processingJobs     ProcessingJob[]
+  newsletter         NewsletterSubscription?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([email])
+  @@index([sessionId])
+}
+
+model CloudinaryConfig {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id])
+  cloudName      String
+  uploadPreset   String
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ProcessingJob {
+  id                 String           @id @default(cuid())
+  userId             String?
+  user               User?            @relation(fields: [userId], references: [id])
+  mode               ProcessingMode
+  status             ProcessingStatus @default(pending)
+  inputPersonImage   String?
+  inputGarmentImage  String?
+  inputProductImage  String?
+  options            Json?
+  processingTimeMs   Int?
+  errorMessage       String?
+  completedAt        DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  results            GeneratedResult[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model GeneratedResult {
+  id                  String   @id @default(cuid())
+  jobId               String
+  job                 ProcessingJob @relation(fields: [jobId], references: [id])
+  resultType          ResultType
+  viewAngle           String?  // front, back, left, right
+  imageUrl            String?
+  platform            String?  // xiaohongshu, jd, etc.
+  title               String?
+  description         String?
+  tags                String[]
+  recommendedImageUrl String?
+  metadata            Json?
+  createdAt           DateTime @default(now())
+
+  @@index([jobId])
+  @@index([platform])
+  @@index([viewAngle])
+}
+
+model NewsletterSubscription {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  ipAddress       String?
+  userAgent       String?
+  subscribedAt    DateTime @default(now())
+  unsubscribedAt  DateTime?
+  isActive        Boolean  @default(true)
+  user            User?    @relation(fields: [userId], references: [id])
+  userId          String?
+
+  @@index([email])
+  @@index([isActive])
+  @@index([subscribedAt])
+}
+
+enum ProcessingMode {
+  multiview
+  tryon
+  crossplatform
+}
+
+enum ProcessingStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum ResultType {
+  image
+  text
+  both
+}
