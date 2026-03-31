@@ -31,6 +31,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { showSuccess, showError } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
+import Logo from "@/components/logo";
 
 type ProcessingStep = "upload" | "enhance" | "processing" | "result";
 
@@ -186,9 +187,7 @@ const Enhancer = () => {
                 Back to Home
               </Button>
               <div className="flex items-center space-x-2">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  IPOW
-                </h1>
+                <Logo />
               </div>
             </div>
             <LanguageSwitcher />
