@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { showSuccess, showError } from "@/utils/toast";
 import { useState } from "react";
-import { validateEmail, sanitizeString, checkRateLimit } from "@/utils/security";
+import { validateEmail, sanitizeString } from "@/utils/security";
 
 const NewsletterSignup = () => {
   const { toast } = useToast();
@@ -11,15 +11,15 @@ const NewsletterSignup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Sanitize input
     const sanitizedEmail = sanitizeString(email);
-    
+
     if (!sanitizedEmail) {
       showError("Please enter an email address");
       return;
     }
-    
+
     // Validate email
     if (!validateEmail(sanitizedEmail)) {
       showError("Please enter a valid email address");
@@ -38,7 +38,7 @@ const NewsletterSignup = () => {
     try {
       // Simulate API call - replace with actual endpoint
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       showSuccess("Thank you for subscribing!");
       setEmail("");
     } catch (error) {
@@ -57,7 +57,7 @@ const NewsletterSignup = () => {
       <h3 className="text-lg font-bold text-gray-900 mb-4">
         Subscribe to our newsletter
       </h3>
-      <p className="text-sm text-gray-600 mb-6">
+      <p className="text-lg text-gray-600 mb-6">
         Get the latest updates, features, and special offers
       </p>
       <div className="flex items-center">
@@ -72,8 +72,8 @@ const NewsletterSignup = () => {
           aria-label="Email address"
           maxLength={254}
         />
-        <Button 
-          size="sm" 
+        <Button
+          size="sm"
           type="submit"
           disabled={isSubmitting}
           className="ml-3"
