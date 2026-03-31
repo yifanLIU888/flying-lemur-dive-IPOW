@@ -9,13 +9,10 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Upload, 
-  Download, 
-  Image as ImageIcon, 
+import {   Upload, 
+  Download,   Image as ImageIcon, 
   Sparkles, 
-  ArrowLeft, 
-  Zap,
+  ArrowLeft,   Zap,
   Wand2,
   Crop,
   Palette,
@@ -26,7 +23,7 @@ import {
   RotateCcw,
   CheckCircle2,
   Loader2,
-  Scissors2 // Replacing Sharpen with Scissors2
+  Scissors // Using Scissors instead of Scissors2
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -264,8 +261,7 @@ const Enhancer = () => {
               />
               <Upload className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-lg font-medium text-gray-700 mb-2">
-                拖放图片到这里
-              </p>
+                拖放图片到这里              </p>
               <p className="text-sm text-gray-500 mb-4">
                 支持 JPG, PNG, WebP 格式，最大 10MB
               </p>
@@ -440,7 +436,7 @@ const Enhancer = () => {
                     <div>
                       <div className="flex justify-between mb-2">
                         <Label className="flex items-center gap-2">
-                          <Scissors2 className="w-4 h-4" /> {/* Replacing Sharpen with Scissors2 */}
+                          <Scissors className="w-4 h-4" /> {/* Using Scissors instead of Scissors2 */}
                           <span>锐度</span>
                         </Label>
                         <span className="text-sm text-gray-500">{enhancementOptions.sharpness}%</span>
