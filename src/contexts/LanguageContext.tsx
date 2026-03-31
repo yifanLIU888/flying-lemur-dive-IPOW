@@ -135,8 +135,7 @@ const translations: Record<string, Record<Language, string>> = {
   "plan.enterprise.feature5": { zh: "本地部署选项", en: "On-premise option" },
   "pricing.getStarted": { zh: "开始使用", en: "Get Started" },
 
-  // CTA Section
-  "cta.title": { zh: "准备好改变您的照片了吗？", en: "Ready to Transform Your Photos?" },
+  // CTA Section  "cta.title": { zh: "准备好改变您的照片了吗？", en: "Ready to Transform Your Photos?" },
   "cta.description": { zh: "加入 100,000+ 用户，他们已经用我们的 AI 增强了数百万张照片", en: "Join 100,000+ users who have already enhanced millions of photos with our AI" },
   "cta.freeTrial": { zh: "开始免费试用", en: "Start Free Trial" },
   "cta.scheduleDemo": { zh: "预约演示", en: "Schedule Demo" },
@@ -168,10 +167,9 @@ const translations: Record<string, Record<Language, string>> = {
   "footer.gdpr": { zh: "GDPR", en: "GDPR" },
   "footer.rights": { zh: "版权所有", en: "All rights reserved" },
   "footer.madeWith": { zh: "用", en: "Made with" },
-  "footer.by": { zh: "由 Dyad 制作", en: "by Dyad" },
+  "footer.by": { zh: "由 Yifan 制作", en: "by Yifan" },
 
-  // Toast messages
-  "toast.subscribeSuccess": { zh: "感谢订阅！", en: "Thank you for subscribing!" },
+  // Toast messages  "toast.subscribeSuccess": { zh: "感谢订阅！", en: "Thank you for subscribing!" },
   "toast.subscribeError": { zh: "订阅失败，请重试。", en: "Failed to subscribe. Please try again." },
   "toast.emailRequired": { zh: "请输入邮箱地址", en: "Please enter an email address" },
   "toast.emailInvalid": { zh: "请输入有效的邮箱地址", en: "Please enter a valid email address" },
@@ -243,5 +241,5 @@ const translations: Record<string, Record<Language, string>> = {
   "enhancer.readyContent": { zh: "适用于多个平台的即用型营销内容", en: "Ready-to-use marketing content for multiple platforms" },
   "enhancer.contentLabel": { zh: "内容", en: "Content" },
   "enhancer.copyright": { zh: "版权所有", en: "All rights reserved" },
-  "enhancer.madeWith": { zh: "用 ❤️ 由 Dyad 制作", en: "Made with ❤️ by Dyad" }
+  "enhancer.madeWith": { zh: "用 ❤️ 由 Yifan 制作", en: "Made with ❤️ by Yifan" }
 };
