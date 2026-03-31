@@ -368,643 +368,240 @@ const Enhancer = () => {
               {t("hero.title1")} <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">{t("hero.title2")}</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Upload a person's photo to generate 3D model with front, back, left, and right views
+              上传人物照片，生成正面、背面、左侧、右侧的3D模型
             </p>
           </div>
 
           <Card 
             className="border-2 border-dashed border-gray-300 hover:border-blue-500 transition-colors cursor-pointer bg-white/80 backdrop-blur-sm"
-            onDrop={(e) => handleDrop(e, 'person')}
-            onDragOver={handleDragOver}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <CardContent className="p-16 text-center">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleFileUpload(e, 'person')}
-                className="hidden"
-              />
-              <div className="flex flex-col items-center">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mb-6">
-                  <User className="w-8 h-8 text-blue-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {t("enhancer.uploadPerson")}
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Drag & drop or click to select a clear photo of a person
-                </p>
-                <Button 
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full"
-                >
-                  {t("enhancer.uploadPerson")}
-                </Button>
-                <p className="text-sm text-gray-500 mt-4">
-                  Supports: JPG, PNG, WebP (Max 10MB)
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    } else if (activeMode === "tryon") {
-      return (
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {t("enhancer.tryon")}
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              {t("enhancer.virtualTryon")}
-            </p>
-          </div>
+            onDrop
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card 
-              className="border-2 border-dashed border-gray-300 hover:border-blue-500 transition-colors cursor-pointer bg-white/80 backdrop-blur-sm"
-              onDrop={(e) => handleDrop(e, 'person')}
-              onDragOver={handleDragOver}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <CardContent className="p-8 text-center">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileUpload(e, 'person')}
-                  className="hidden"
-                />
-                <div className="flex flex-col items-center">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mb-6">
-                    <User className="w-8 h-8 text-blue-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {t("enhancer.personPhoto")}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {uploadedImage ? "✓ Uploaded" : "Drag & drop or click"}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+<dyad-write path="src/contexts/LanguageContext.tsx" description="Adding missing translations for Enhancer page features and correcting existing Chinese translations">
+"use client";
 
-            <Card 
-              className="border-2 border-dashed border-gray-300 hover:border-purple-500 transition-colors cursor-pointer bg-white/80 backdrop-blur-sm"
-              onDrop={(e) => handleDrop(e, 'garment')}
-              onDragOver={handleDragOver}
-              onClick={() => garmentInputRef.current?.click()}
-            >
-              <CardContent className="p-8 text-center">
-                <input
-                  ref={garmentInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileUpload(e, 'garment')}
-                  className="hidden"
-                />
-                <div className="flex flex-col items-center">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center mb-6">
-                    <Shirt className="w-8 h-8 text-purple-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {t("enhancer.garmentPhoto")}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {garmentImage ? "✓ Uploaded" : "Drag & drop or click"}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      );
-    } else if (activeMode === "crossplatform") {
-      return (
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {t("enhancer.crossplatform")}
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              {t("enhancer.uploadProduct")}
-            </p>
-          </div>
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-          <Card 
-            className="border-2 border-dashed border-gray-300 hover:border-green-500 transition-colors cursor-pointer bg-white/80 backdrop-blur-sm"
-            onDrop={(e) => handleDrop(e, 'product')}
-            onDragOver={handleDragOver}
-            onClick={() => productInputRef.current?.click()}
-          >
-            <CardContent className="p-16 text-center">
-              <input
-                ref={productInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleFileUpload(e, 'product')}
-                className="hidden"
-              />
-              <div className="flex flex-col items-center">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-100 to-blue-100 flex items-center justify-center mb-6">
-                  <ShoppingBag className="w-8 h-8 text-green-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {t("enhancer.uploadProduct")}
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Drag & drop or click to select your product photo
-                </p>
-                <Button 
-                  size="lg"
-                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-full"
-                >
-                  {t("enhancer.uploadProduct")}
-                </Button>
-                <p className="text-sm text-gray-500 mt-4">
-                  Supports: JPG, PNG, WebP (Max 10MB)
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
+export type Language = "zh" | "en";
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error("useLanguage must be used within LanguageProvider");
+  }
+  return context;
+};
+
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
+  const [language, setLanguageState] = useState<Language>(() => {
+    const saved = localStorage.getItem("preferred-language");
+    return (saved as Language) || "zh";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("preferred-language", language);
+    document.documentElement.lang = language;
+  }, [language]);
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
   };
 
-  const renderProcessingStep = () => {
-    return (
-      <div className="max-w-2xl mx-auto text-center">
-        <Card className="border-0 bg-white/80 backdrop-blur-sm shadow-xl">
-          <CardContent className="p-16">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mb-6">
-              <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              {activeMode === "multiview" ? t("enhancer.generating3d") : 
-               activeMode === "tryon" ? t("enhancer.processingTryon") : 
-               t("enhancer.generatingContent")}
-            </h2>
-            <p className="text-gray-600 mb-8">
-              Our AI is working its magic. This usually takes a few seconds...
-            </p>
-            <div className="max-w-md mx-auto">
-              <Progress value={processingProgress} className="h-3 mb-4" />
-              <p className="text-sm text-gray-500">{processingProgress}%</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  const renderMultiviewResult = () => {
-    return (
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <Badge className="mb-4 bg-green-100 text-green-700 hover:bg-green-100">
-            <CheckCircle2 className="w-4 h-4 mr-2" />
-            {t("enhancer.results")}
-          </Badge>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t("enhancer.multiview")}
-          </h1>
-          <p className="text-xl text-gray-600">
-            View your generated 3D model from all angles
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {[
-            { view: 'front', label: t("enhancer.frontView"), icon: Camera },
-            { view: 'back', label: t("enhancer.backView"), icon: Camera },
-            { view: 'left', label: t("enhancer.leftView"), icon: Camera },
-            { view: 'right', label: t("enhancer.rightView"), icon: Camera }
-          ].map(({ view, label, icon: Icon }) => (
-            <Card key={view} className="border-0 bg-white/80 backdrop-blur-sm shadow-xl overflow-hidden">
-              <CardContent className="p-4">
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
-                  {processedResults[view as keyof typeof processedResults] ? (
-                    <img 
-                      src={processedResults[view as keyof typeof processedResults]} 
-                      alt={label} 
-                      className="w-full h-full object-contain"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Icon className="w-12 h-12 text-gray-400" />
-                    </div>
-                  )}
-                </div>
-                <p className="text-center text-sm font-medium text-gray-700">{label}</p>
-                {processedResults[view as keyof typeof processedResults] && (
-                  <Button
-                    onClick={() => downloadImage(processedResults[view as keyof typeof processedResults]!, `ipow-3d-${view}-${Date.now()}.png`)}
-                    variant="outline"
-                    size="sm"
-                    className="w-full mt-2 rounded-full"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    {t("enhancer.download")}
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="text-center">
-          <Button
-            onClick={resetEnhancer}
-            variant="outline"
-            size="lg"
-            className="rounded-full px-8"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            {t("enhancer.uploadNew")}
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderTryonResult = () => {
-    return (
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <Badge className="mb-4 bg-green-100 text-green-700 hover:bg-green-100">
-            <CheckCircle2 className="w-4 h-4 mr-2" />
-            {t("enhancer.results")}
-          </Badge>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t("enhancer.virtualTryon")}
-          </h1>
-          <p className="text-xl text-gray-600">
-            See how the garment looks from all angles
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {[
-            { view: 'tryonFront', label: t("enhancer.frontView"), icon: Shirt },
-            { view: 'tryonBack', label: t("enhancer.backView"), icon: Shirt },
-            { view: 'tryonLeft', label: t("enhancer.leftView"), icon: Shirt },
-            { view: 'tryonRight', label: t("enhancer.rightView"), icon: Shirt }
-          ].map(({ view, label, icon: Icon }) => (
-            <Card key={view} className="border-0 bg-white/80 backdrop-blur-sm shadow-xl overflow-hidden">
-              <CardContent className="p-4">
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
-                  {processedResults[view as keyof typeof processedResults] ? (
-                    <img 
-                      src={processedResults[view as keyof typeof processedResults]} 
-                      alt={label} 
-                      className="w-full h-full object-contain"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Icon className="w-12 h-12 text-gray-400" />
-                    </div>
-                  )}
-                </div>
-                <p className="text-center text-sm font-medium text-gray-700">{label} View</p>
-                {processedResults[view as keyof typeof processedResults] && (
-                  <Button
-                    onClick={() => downloadImage(processedResults[view as keyof typeof processedResults]!, `ipow-tryon-${view}-${Date.now()}.png`)}
-                    variant="outline"
-                    size="sm"
-                    className="w-full mt-2 rounded-full"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    {t("enhancer.download")}
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-            <RefreshCw className="w-5 h-5 mr-2 text-purple-600" />
-            {t("enhancer.tryDifferent")}
-          </h3>
-          <p className="text-gray-600 mb-4">
-            Want to see how a different clothing item looks? Upload a new garment image.
-          </p>
-          <Button
-            onClick={() => {
-              setGarmentImage(null);
-              setCurrentStep("upload");
-            }}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full"
-          >
-            {t("enhancer.uploadNew")}
-          </Button>
-        </div>
-
-        <div className="text-center">
-          <Button
-            onClick={resetEnhancer}
-            variant="outline"
-            size="lg"
-            className="rounded-full px-8"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            {t("enhancer.startOver")}
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderCrossPlatformResult = () => {
-    return (
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <Badge className="mb-4 bg-green-100 text-green-700 hover:bg-green-100">
-            <CheckCircle2 className="w-4 h-4 mr-2" />
-            {t("enhancer.results")}
-          </Badge>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t("enhancer.crossplatform")}
-          </h1>
-          <p className="text-xl text-gray-600">
-            Ready-to-use marketing content for multiple platforms
-          </p>
-        </div>
-
-        <div className="mb-6">
-          <Label className="text-lg font-semibold mb-3 block">{t("enhancer.selectPlatform")}:</Label>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { id: "xiaohongshu", name: t("enhancer.xiaohongshu"), icon: "📕" },
-              { id: "jd", name: t("enhancer.jd"), icon: "🛒" },
-              { id: "pinduoduo", name: t("enhancer.pinduoduo"), icon: "🔪" },
-              { id: "amazon", name: t("enhancer.amazon"), icon: "📦" },
-              { id: "shopee", name: t("enhancer.shopee"), icon: "🌏" },
-              { id: "social", name: t("enhancer.social"), icon: "📱" }
-            ].map(platform => (
-              <Button
-                key={platform.id}
-                onClick={() => setSelectedPlatform(platform.id)}
-                variant={selectedPlatform === platform.id ? "default" : "outline"}
-                className="rounded-full"
-              >
-                <span className="mr-2">{platform.icon}</span>
-                {platform.name}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {processedResults.platformContents?.map(content => (
-          <Card key={content.platform} className={`mb-6 border-0 bg-white/80 backdrop-blur-sm shadow-xl ${selectedPlatform === content.platform ? 'ring-2 ring-blue-500' : ''}`}>
-            <CardContent className="p-6">
-              <div className="flex items-center mb-4">
-                <Globe className="w-6 h-6 mr-2 text-blue-600" />
-                <h3 className="text-xl font-semibold text-gray-900">{content.name} Content</h3>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2 flex items-center">
-                    <ImageIcon className="w-4 h-4 mr-2" />
-                    {t("enhancer.recommendedImage")}
-                  </h4>
-                  <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
-                    {content.image && (
-                      <img 
-                        src={content.image} 
-                        alt={`${content.name} product`} 
-                        className="w-full h-full object-contain"
-                      />
-                    )}
-                  </div>
-                  <Button
-                    onClick={() => downloadImage(content.image!, `ipow-${content.platform}-image-${Date.now()}.png`)}
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    {t("enhancer.download")}
-                  </Button>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2 flex items-center">
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    {t("enhancer.marketingCopy")}
-                  </h4>
-                  <div className="bg-gray-50 rounded-lg p-4 mb-3">
-                    <p className="text-gray-800 mb-3">{content.title}</p>
-                    <p className="text-gray-600 text-sm mb-3">{content.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {content.tags.map((tag, idx) => (
-                        <Badge key={idx} variant="secondary" className="rounded-full">
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => copyToClipboard(`${content.title}\n\n${content.description}\n\n${content.tags.map(t => `#${t}`).join(' ')}`)}
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full flex-1"
-                    >
-                      <Share2 className="w-4 h-4 mr-2" />
-                      {t("enhancer.copyText")}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-
-        <div className="text-center mt-8">
-          <Button
-            onClick={resetEnhancer}
-            variant="outline"
-            size="lg"
-            className="rounded-full px-8"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            {t("enhancer.generateMore")}
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderResultStep = () => {
-    if (activeMode === "multiview") return renderMultiviewResult();
-    if (activeMode === "tryon") return renderTryonResult();
-    if (activeMode === "crossplatform") return renderCrossPlatformResult();
-    return null;
-  };
-
-  const getModeDescription = (mode: FeatureMode) => {
-    switch (mode) {
-      case "multiview":
-        return "Generate 3D model with front, back, left, and right views from a single photo";
-      case "tryon":
-        return "Upload a person photo and garment to see virtual try-on from all angles";
-      case "crossplatform":
-        return "Generate platform-specific marketing content for Chinese & global e-commerce";
-      default:
-        return "";
-    }
+  const t = (key: string): string => {
+    return translations[key]?.[language] || key;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-purple-50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate("/")}
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Home
-              </Button>
-              <div className="flex items-center space-x-2">
-                <Logo />
-              </div>
-            </div>
-            <LanguageSwitcher />
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Feature Mode Tabs */}
-        <div className="mb-8">
-          <Tabs value={activeMode} onValueChange={(value) => setActiveMode(value as FeatureMode)} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 rounded-full p-1 bg-white/80 backdrop-blur-sm">
-              <TabsTrigger value="multiview" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-                <User className="w-4 h-4 mr-2" />
-                3D Model Gen
-              </TabsTrigger>
-              <TabsTrigger value="tryon" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white">
-                <Shirt className="w-4 h-4 mr-2" />
-                Virtual Try-On
-              </TabsTrigger>
-              <TabsTrigger value="crossplatform" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-blue-600 data-[state=active]:text-white">
-                <Globe className="w-4 h-4 mr-2" />
-                Cross-Platform
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          <p className="text-center text-gray-600 mt-3 text-sm">
-            {getModeDescription(activeMode)}
-          </p>
-        </div>
-
-        {/* Step Content */}
-        {currentStep === "upload" && renderUploadStep()}
-        {currentStep === "processing" && renderProcessingStep()}
-        {currentStep === "result" && renderResultStep()}
-
-        {/* Options Panel (only for upload step) */}
-        {currentStep === "upload" && (
-          <div className="max-w-3xl mx-auto mt-8">
-            <Card className="border-0 bg-white/80 backdrop-blur-sm shadow-xl">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <Wand2 className="w-5 h-5 mr-2 text-blue-600" />
-                  Processing Options
-                </h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="enhanceDetails" className="flex items-center cursor-pointer">
-                      <Sparkles className="w-4 h-4 mr-2 text-blue-600" />
-                      Enhance Details
-                    </Label>
-                    <Switch
-                      id="enhanceDetails"
-                      checked={options.enhanceDetails}
-                      onCheckedChange={(checked) => updateOption('enhanceDetails', checked)}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="smoothEdges" className="flex items-center cursor-pointer">
-                      <Contrast className="w-4 h-4 mr-2 text-purple-600" />
-                      Smooth Edges
-                    </Label>
-                    <Switch
-                      id="smoothEdges"
-                      checked={options.smoothEdges}
-                      onCheckedChange={(checked) => updateOption('smoothEdges', checked)}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="preserveColors" className="flex items-center cursor-pointer">
-                      <Palette className="w-4 h-4 mr-2 text-pink-600" />
-                      Preserve Original Colors
-                    </Label>
-                    <Switch
-                      id="preserveColors"
-                      checked={options.preserveColors}
-                      onCheckedChange={(checked) => updateOption('preserveColors', checked)}
-                    />
-                  </div>
-
-                  <div className="border-t pt-4">
-                    <Label className="text-sm font-semibold text-gray-700 mb-2 block flex items-center">
-                      <Monitor className="w-4 h-4 mr-2" />
-                      Output Quality
-                    </Label>
-                    <div className="flex gap-2">
-                      {(['standard', 'hd', 'ultra'] as const).map(quality => (
-                        <Button
-                          key={quality}
-                          onClick={() => updateOption('quality', quality)}
-                          variant={options.quality === quality ? "default" : "outline"}
-                          size="sm"
-                          className="rounded-full capitalize"
-                        >
-                          {quality}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </main>
-
-      <footer className="bg-gray-900 text-gray-300 py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-400 mb-4 md:mb-0">
-              © 2024 IPOW. All rights reserved.
-            </p>
-            <div className="flex items-center space-x-2 text-sm text-gray-400">
-              <span>Made with</span>
-              <span className="text-red-500">❤️</span>
-              <span>by Dyad</span>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
   );
 };
 
-export default Enhancer;
+const translations: Record<string, Record<Language, string>> = {
+  // Navigation
+  "nav.features": { zh: "功能", en: "Features" },
+  "nav.howItWorks": { zh: "使用方法", en: "How It Works" },
+  "nav.pricing": { zh: "价格", en: "Pricing" },
+  "nav.getStarted": { zh: "免费开始", en: "Get Started Free" },
+
+  // Hero Section
+  "hero.badge": { zh: "✨ 由先进 AI 驱动", en: "✨ Powered by Advanced AI" },
+  "hero.title1": { zh: "用 AI 魔法", en: "Transform Your Photos with" },
+  "hero.title2": { zh: "改变你的照片", en: "AI Magic" },
+  "hero.description": { zh: "释放您图片的全部潜力，使用我们尖端的 AI 技术。提升质量、移除背景、修复旧照片，只需几秒钟。", en: "Unlock the full potential of your images with our cutting-edge AI technology. Enhance quality, remove backgrounds, and restore old photos in seconds." },
+  "hero.startNow": { zh: "开始增强", en: "Start Enhancing Now" },
+  "hero.watchDemo": { zh: "观看演示", en: "Watch Demo" },
+
+  // Features Section
+  "features.title": { zh: "强大的 AI 功能", en: "Powerful AI Features" },
+  "features.subtitle": { zh: "让您的照片看起来专业所需的一切", en: "Everything you need to make your photos look professional" },
+  "feature.smartEnhancement.title": { zh: "智能增强", en: "Smart Enhancement" },
+  "feature.smartEnhancement.desc": { zh: "AI 自动调整光线、颜色和锐度，获得专业效果", en: "AI automatically adjusts lighting, color, and sharpness for professional results" },
+  "feature.backgroundRemover.title": { zh: "背景移除", en: "Background Remover" },
+  "feature.backgroundRemover.desc": { zh: "以像素级精度即时移除背景", en: "Instantly remove backgrounds with pixel-perfect accuracy" },
+  "feature.photoRestorer.title": { zh: "照片修复", en: "Photo Restorer" },
+  "feature.photoRestorer.desc": { zh: "恢复旧照片、损坏照片的昔日光彩", en: "Restore old, damaged photos to their former glory" },
+  "feature.upscale.title": { zh: "放大与扩展", en: "Upscale & Enlarge" },
+  "feature.upscale.desc": { zh: "在不损失质量的情况下提高图像分辨率", en: "Increase image resolution without losing quality" },
+  "feature.colorCorrection.title": { zh: "色彩校正", en: "Color Correction" },
+  "feature.colorCorrection.desc": { zh: "自动修复白平衡和色彩问题", en: "Fix white balance and color issues automatically" },
+  "feature.noiseReduction.title": { zh: "降噪", en: "Noise Reduction" },
+  "feature.noiseReduction.desc": { zh: "去除颗粒和噪点，获得干净、专业的图像", en: "Remove grain and noise for clean, professional images" },
+
+  // Testimonials Section
+  "testimonials.title": { zh: "用户评价", en: "What Our Users Say" },
+  "testimonials.subtitle": { zh: "来自满意客户的真实反馈", en: "Real feedback from satisfied customers" },
+  "testimonial.sarah.name": { zh: "莎拉·约翰逊", en: "Sarah Johnson" },
+  "testimonial.sarah.role": { zh: "摄影师", en: "Photographer" },
+  "testimonial.sarah.quote": { zh: "IPOW 将我的作品集照片从优秀提升到惊艳。AI 增强功能令人难以置信！", en: "IPOW transformed my portfolio photos from good to stunning. The AI enhancements are incredible!" },
+  "testimonial.michael.name": { zh: "迈克尔·陈", en: "Michael Chen" },
+  "testimonial.michael.role": { zh: "电商经理", en: "E-commerce Manager" },
+  "testimonial.michael.quote": { zh: "背景移除功能为我节省了数小时的编辑时间。强烈推荐！", en: "The background removal feature saved me hours of editing time. Highly recommended!" },
+  "testimonial.emily.name": { zh: "艾米丽·戴维斯", en: "Emily Davis" },
+  "testimonial.emily.role": { zh: "社交媒体经理", en: "Social Media Manager" },
+  "testimonial.emily.quote": { zh: "我喜欢放大 Instagram 照片有多简单。质量太棒了！", en: "I love how easy it is to upscale my Instagram photos. The quality is amazing!" },
+
+  // How It Works Section
+  "howItWorks.title": { zh: "使用方法", en: "How It Works" },
+  "howItWorks.subtitle": { zh: "三个简单步骤改变您的照片", en: "Three simple steps to transform your photos" },
+  "step.upload.title": { zh: "上传", en: "Upload" },
+  "step.upload.desc": { zh: "选择或拖放您的图片", en: "Select or drag & drop your image" },
+  "step.process.title": { zh: "处理", en: "Process" },
+  "step.process.desc": { zh: "AI 自动分析和增强", en: "AI analyzes and enhances automatically" },
+  "step.download.title": { zh: "下载", en: "Download" },
+  "step.download.desc": { zh: "立即获取增强后的图像", en: "Get your enhanced image instantly" },
+
+  // Before/After Section
+  "beforeAfter.title": { zh: "看看区别", en: "See the Difference" },
+  "beforeAfter.subtitle": { zh: "来自真实用户的真实效果", en: "Real results from real users" },
+  "beforeAfter.before": { zh: "原始图片", en: "Original Image" },
+  "beforeAfter.after": { zh: "增强结果", en: "Enhanced Result" },
+
+  // Pricing Section
+  "pricing.title": { zh: "简单透明的价格", en: "Simple, Transparent Pricing" },
+  "pricing.subtitle": { zh: "选择适合您的计划", en: "Choose the plan that fits your needs" },
+  "plan.free.name": { zh: "免费", en: "Free" },
+  "plan.free.period": { zh: "永久", en: "forever" },
+  "plan.free.feature1": { zh: "每月 10 张图片", en: "10 images per month" },
+  "plan.free.feature2": { zh: "基础增强", en: "Basic enhancements" },
+  "plan.free.feature3": { zh: "标准质量", en: "Standard quality" },
+  "plan.free.feature4": { zh: "邮件支持", en: "Email support" },
+  "plan.pro.name": { zh: "专业版", en: "Pro" },
+  "plan.pro.period": { zh: "/月", en: "/month" },
+  "plan.pro.feature1": { zh: "无限图片", en: "Unlimited images" },
+  "plan.pro.feature2": { zh: "所有 AI 功能", en: "All AI features" },
+  "plan.pro.feature3": { zh: "高清质量输出", en: "HD quality output" },
+  "plan.pro.feature4": { zh: "优先支持", en: "Priority support" },
+  "plan.pro.feature5": { zh: "API 访问", en: "API access" },
+  "plan.enterprise.name": { zh: "企业版", en: "Enterprise" },
+  "plan.enterprise.period": { zh: "", en: "" },
+  "plan.enterprise.feature1": { zh: "专业版所有内容", en: "Everything in Pro" },
+  "plan.enterprise.feature2": { zh: "自定义 AI 模型", en: "Custom AI models" },
+  "plan.enterprise.feature3": { zh: "SLA 保证", en: "SLA guarantee" },
+  "plan.enterprise.feature4": { zh: "专属支持", en: "Dedicated support" },
+  "plan.enterprise.feature5": { zh: "本地部署选项", en: "On-premise option" },
+  "pricing.getStarted": { zh: "开始使用", en: "Get Started" },
+
+  // CTA Section
+  "cta.title": { zh: "准备好改变您的照片了吗？", en: "Ready to Transform Your Photos?" },
+  "cta.description": { zh: "加入 100,000+ 用户，他们已经用我们的 AI 增强了数百万张照片", en: "Join 100,000+ users who have already enhanced millions of photos with our AI" },
+  "cta.freeTrial": { zh: "开始免费试用", en: "Start Free Trial" },
+  "cta.scheduleDemo": { zh: "预约演示", en: "Schedule Demo" },
+
+  // Newsletter Section
+  "newsletter.title": { zh: "订阅我们的新闻通讯", en: "Subscribe to our newsletter" },
+  "newsletter.description": { zh: "获取最新更新、功能和特别优惠", en: "Get the latest updates, features, and special offers" },
+  "newsletter.placeholder": { zh: "您的邮箱地址", en: "Your email address" },
+  "newsletter.subscribe": { zh: "订阅", en: "Subscribe" },
+  "newsletter.subscribing": { zh: "订阅中...", en: "Subscribing..." },
+  "newsletter.privacy": { zh: "我们尊重您的隐私。随时可以取消订阅。", en: "We respect your privacy. Unsubscribe anytime." },
+
+  // Footer
+  "footer.description": { zh: "AI 驱动的图像增强，简单易用。几秒钟内改变您的照片。", en: "AI-powered image enhancement made simple. Transform your photos in seconds." },
+  "footer.product": { zh: "产品", en: "Product" },
+  "footer.company": { zh: "公司", en: "Company" },
+  "footer.legal": { zh: "法律", en: "Legal" },
+  "footer.features": { zh: "功能", en: "Features" },
+  "footer.pricing": { zh: "价格", en: "Pricing" },
+  "footer.api": { zh: "API", en: "API" },
+  "footer.integrations": { zh: "集成", en: "Integrations" },
+  "footer.about": { zh: "关于", en: "About" },
+  "footer.blog": { zh: "博客", en: "Blog" },
+  "footer.careers": { zh: "招聘", en: "Careers" },
+  "footer.contact": { zh: "联系我们", en: "Contact" },
+  "footer.privacy": { zh: "隐私", en: "Privacy" },
+  "footer.terms": { zh: "条款", en: "Terms" },
+  "footer.cookies": { zh: "Cookie", en: "Cookies" },
+  "footer.gdpr": { zh: "GDPR", en: "GDPR" },
+  "footer.rights": { zh: "版权所有", en: "All rights reserved" },
+  "footer.madeWith": { zh: "用", en: "Made with" },
+  "footer.by": { zh: "由 Dyad 制作", en: "by Dyad" },
+
+  // Toast messages
+  "toast.subscribeSuccess": { zh: "感谢订阅！", en: "Thank you for subscribing!" },
+  "toast.subscribeError": { zh: "订阅失败，请重试。", en: "Failed to subscribe. Please try again." },
+  "toast.emailRequired": { zh: "请输入邮箱地址", en: "Please enter an email address" },
+  "toast.emailInvalid": { zh: "请输入有效的邮箱地址", en: "Please enter a valid email address" },
+  "toast.rateLimit": { zh: "提交次数过多，请稍后再试。", en: "Too many submissions. Please try again later." },
+  "toast.invalidFileType": { zh: "请上传图片文件", en: "Please upload an image file" },
+  "toast.fileTooLarge": { zh: "文件大小必须小于 10MB", en: "File size must be less than 10MB" },
+  "toast.processingComplete": { zh: "处理完成！", en: "Processing complete!" },
+  "toast.downloadStarted": { zh: "下载已开始！", en: "Download started!" },
+
+  // Enhancer Page - New Translations
+  "enhancer.title": { zh: "AI 图像增强工具", en: "AI Image Enhancer" },
+  "enhancer.multiview": { zh: "人物多角度生成", en: "Multi-View Generation" },
+  "enhancer.tryon": { zh: "虚拟试穿", en: "Virtual Try-On" },
+  "enhancer.crossplatform": { zh: "跨平台内容生成", en: "Cross-Platform Content" },
+  "enhancer.uploadPerson": { zh: "上传人物照片", en: "Upload Person Photo" },
+  "enhancer.uploadGarment": { zh: "上传服装照片", en: "Upload Garment Photo" },
+  "enhancer.uploadProduct": { zh: "上传产品照片", en: "Upload Product Photo" },
+  "enhancer.processing": { zh: "处理中...", en: "Processing..." },
+  "enhancer.generating3d": { zh: "生成3D模型...", en: "Generating 3D Model..." },
+  "enhancer.processingTryon": { zh: "处理虚拟试穿...", en: "Processing Virtual Try-On..." },
+  "enhancer.generatingContent": { zh: "生成平台内容...", en: "Generating Platform Content..." },
+  "enhancer.results": { zh: "结果", en: "Results" },
+  "enhancer.frontView": { zh: "正面视图", en: "Front View" },
+  "enhancer.backView": { zh: "背面视图", en: "Back View" },
+  "enhancer.leftView": { zh: "左侧视图", en: "Left View" },
+  "enhancer.rightView": { zh: "右侧视图", en: "Right View" },
+  "enhancer.download": { zh: "下载", en: "Download" },
+  "enhancer.copyText": { zh: "复制文本", en: "Copy Text" },
+  "enhancer.uploadNew": { zh: "上传新图片", en: "Upload New Image" },
+  "enhancer.startOver": { zh: "重新开始", en: "Start Over" },
+  "enhancer.processingOptions": { zh: "处理选项", en: "Processing Options" },
+  "enhancer.enhanceDetails": { zh: "增强细节", en: "Enhance Details" },
+  "enhancer.smoothEdges": { zh: "平滑边缘", en: "Smooth Edges" },
+  "enhancer.preserveColors": { zh: "保持原始颜色", en: "Preserve Original Colors" },
+  "enhancer.outputQuality": { zh: "输出质量", en: "Output Quality" },
+  "enhancer.standard": { zh: "标准", en: "Standard" },
+  "enhancer.hd": { zh: "高清", en: "HD" },
+  "enhancer.ultra": { zh: "超高清", en: "Ultra" },
+  "enhancer.selectPlatform": { zh: "选择平台", en: "Select Platform" },
+  "enhancer.marketingCopy": { zh: "营销文案", en: "Marketing Copy" },
+  "enhancer.recommendedImage": { zh: "推荐图片", en: "Recommended Image" },
+  "enhancer.garmentPhoto": { zh: "服装照片", en: "Garment Photo" },
+  "enhancer.personPhoto": { zh: "人物照片", en: "Person Photo" },
+  "enhancer.productPhoto": { zh: "产品照片", en: "Product Photo" },
+  "enhancer.virtualTryon": { zh: "虚拟试穿", en: "Virtual Try-On" },
+  "enhancer.tryDifferent": { zh: "尝试不同的服装", en: "Try Different Garment" },
+  "enhancer.generateMore": { zh: "生成更多内容", en: "Generate More Content" },
+  "enhancer.xiaohongshu": { zh: "小红书", en: "Xiaohongshu" },
+  "enhancer.jd": { zh: "京东", en: "JD.com" },
+  "enhancer.pinduoduo": { zh: "拼多多", en: "Pinduoduo" },
+  "enhancer.amazon": { zh: "Amazon", en: "Amazon" },
+  "enhancer.shopee": { zh: "Shopee", en: "Shopee" },
+  "enhancer.social": { zh: "社交媒体", en: "Social Media" }
+};
