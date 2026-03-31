@@ -22,11 +22,11 @@ import {
   Sun,
   Moon,
   Contrast,
-  Sharpen,
   Eraser,
   RotateCcw,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Scissors2 // Replacing Sharpen with Scissors2
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -440,8 +440,8 @@ const Enhancer = () => {
                     <div>
                       <div className="flex justify-between mb-2">
                         <Label className="flex items-center gap-2">
-                          <Sharpen className="w-4 h-4" />
-                          锐度
+                          <Scissors2 className="w-4 h-4" /> {/* Replacing Sharpen with Scissors2 */}
+                          <span>锐度</span>
                         </Label>
                         <span className="text-sm text-gray-500">{enhancementOptions.sharpness}%</span>
                       </div>
