@@ -1,19 +1,19 @@
 /**
  * Cloudinary 图像处理工具
- * IMPORTANT: Users must provide their own Cloudinary credentials via environment variables
+ * IMPORTANT: Users must provide their own Cloudinary credentials.
+ * Credentials are stored only in browser's localStorage and never exposed in the build.
  *
  * Security Notes:
- * - NEVER commit real API credentials to source control
- * - Use environment variables for all sensitive configuration
- * - For Vercel deployment, set environment variables in the dashboard
+ * - NEVER store API credentials in client-side code or environment variables
+ * - Users provide their own credentials via the UI
+ * - Credentials are stored in localStorage (session-only, not sent to server)
+ * - For production, consider implementing a backend proxy for better security
  *
- * Setup Instructions:
+ * Setup Instructions for Users:
  * 1. Create a Cloudinary account at https://cloudinary.com
- * 2. Get your Cloud Name from Dashboard
+ * 2. Get Cloud Name from Dashboard
  * 3. Create an Unsigned Upload Preset in Settings → Upload
- * 4. Set environment variables:
- *    - VITE_CLOUDINARY_CLOUD_NAME
- *    - VITE_CLOUDINARY_UPLOAD_PRESET
+ * 4. Enter credentials in the app's settings panel
  */
 
 export interface CloudinaryConfig {
@@ -22,24 +22,56 @@ export interface CloudinaryConfig {
 }
 
 /**
- * Get Cloudinary configuration from environment variables
+ * Get Cloudinary configuration from localStorage
  * Throws error if not configured
  */
 export const getCloudinaryConfig = (): CloudinaryConfig => {
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
-  if (!cloudName || !uploadPreset) {
+  const stored = localStorage.getItem('cloudinary_config');
+  if (!stored) {
     throw new Error(
-      'Cloudinary credentials not configured. Please set VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET environment variables. ' +
-      'See src/utils/cloudinary.ts for setup instructions.'
+      'Cloudinary credentials not configured. Please enter your Cloudinary credentials in the settings panel.'
     );
   }
+  try {
+    const config = JSON.parse(stored) as CloudinaryConfig;
+    if (!config.cloudName || !config.uploadPreset) {
+      throw new Error('Incomplete Cloudinary configuration');
+    }
+    return config;
+  } catch (error) {
+    throw new Error('Invalid Cloudinary configuration. Please reconfigure.');
+  }
+};
 
-  return {
-    cloudName,
-    uploadPreset
-  };
+/**
+ * Save Cloudinary configuration to localStorage
+ */
+export const saveCloudinaryConfig = (config: CloudinaryConfig) => {
+  if (!config.cloudName || !config.uploadPreset) {
+    throw new Error('Both cloudName and uploadPreset are required');
+  }
+  localStorage.setItem('cloudinary_config', JSON.stringify(config));
+};
+
+/**
+ * Clear Cloudinary configuration from localStorage
+ */
+export const clearCloudinaryConfig = () => {
+  localStorage.removeItem('cloudinary_config');
+};
+
+/**
+ * Check if Cloudinary configuration exists
+ */
+export const hasCloudinaryConfig = (): boolean => {
+  const stored = localStorage.getItem('cloudinary_config');
+  if (!stored) return false;
+  try {
+    const config = JSON.parse(stored);
+    return !!config.cloudName && !!config.uploadPreset;
+  } catch {
+    return false;
+  }
 };
 
 /**

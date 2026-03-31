@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { showSuccess, showError } from "@/utils/toast";
-import { useState } from "react";
-import { validateEmail, sanitizeString, validateFile } from "@/utils/security";
+import { useState, useRef } from "react";
+import { validateEmail, sanitizeString } from "@/utils/security";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const NewsletterSignup = () => {
@@ -12,9 +12,19 @@ const NewsletterSignup = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const lastSubmitTime = useRef(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Simple client-side cooldown to prevent accidental double-clicks
+    // NOTE: This is NOT rate limiting - it's just UX. Real rate limiting must be server-side.
+    const now = Date.now();
+    if (now - lastSubmitTime.current < 2000) {
+      showError("Please wait a moment before submitting again.");
+      return;
+    }
+    lastSubmitTime.current = now;
 
     // Sanitize input
     const sanitizedEmail = sanitizeString(email);
@@ -29,14 +39,6 @@ const NewsletterSignup = () => {
       showError(t("toast.emailInvalid"));
       return;
     }
-
-    // IMPORTANT: Rate limiting must be implemented server-side
-    // Client-side check is only for UX, not security
-    // const rateLimitKey = `newsletter_${sanitizedEmail}`;
-    // if (!checkRateLimit(rateLimitKey, 5, 30 * 60 * 1000)) {
-    //   showError(t("toast.rateLimit"));
-    //   return;
-    // }
 
     setIsSubmitting(true);
 

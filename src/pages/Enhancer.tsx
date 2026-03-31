@@ -38,6 +38,8 @@ import { useNavigate } from "react-router-dom";
 import Logo from "@/components/logo";
 import { 
   getCloudinaryConfig,
+  saveCloudinaryConfig,
+  hasCloudinaryConfig,
   uploadToCloudinary, 
   generateTransformedUrl, 
   extractPublicId,
@@ -97,21 +99,33 @@ const Enhancer = () => {
   });
 
   // Cloudinary configuration state
-  const [cloudinaryConfig, setCloudinaryConfig] = useState<CloudinaryConfig | null>(null);
+  const [cloudinaryConfig, setCloudinaryConfig] = useState<CloudinaryConfig>({ cloudName: '', uploadPreset: '' });
   const [configError, setConfigError] = useState<string | null>(null);
   const [showConfig, setShowConfig] = useState(false);
 
   // Check Cloudinary configuration on mount
   useEffect(() => {
     try {
-      const config = getCloudinaryConfig();
-      setCloudinaryConfig(config);
-      setConfigError(null);
+      if (hasCloudinaryConfig()) {
+        const config = getCloudinaryConfig();
+        setCloudinaryConfig(config);
+        setConfigError(null);
+      } else {
+        setConfigError('Cloudinary credentials not configured. Please enter your credentials in settings.');
+        setShowConfig(true);
+      }
     } catch (error) {
-      setConfigError(error instanceof Error ? error.message : "Cloudinary configuration missing");
-      setCloudinaryConfig(null);
+      setConfigError(error instanceof Error ? error.message : "Cloudinary configuration error");
+      setShowConfig(true);
     }
   }, []);
+
+  // Trigger processing when step changes to processing
+  useEffect(() => {
+    if (currentStep === "processing" && !isProcessing) {
+      processImage();
+    }
+  }, [currentStep, isProcessing]);
 
   useEffect(() => {
     setCurrentStep("upload");
@@ -122,6 +136,10 @@ const Enhancer = () => {
     setProcessingProgress(0);
     setIsProcessing(false);
   }, [activeMode]);
+
+  const isConfigValid = () => {
+    return cloudinaryConfig.cloudName.trim() !== '' && cloudinaryConfig.uploadPreset.trim() !== '';
+  };
 
   const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>, type: 'person' | 'garment' | 'product') => {
     const file = event.target.files?.[0];
@@ -142,17 +160,28 @@ const Enhancer = () => {
       const result = e.target?.result as string;
       if (type === 'person') {
         setUploadedImage(result);
-        if (activeMode === "multiview") setCurrentStep("processing");
+        if (activeMode === "multiview") {
+          if (isConfigValid()) {
+            setCurrentStep("processing");
+          } else {
+            setConfigError('Please configure Cloudinary credentials first.');
+            setShowConfig(true);
+          }
+        }
       } else if (type === 'garment') {
         setGarmentImage(result);
-        if (activeMode === "tryon" && uploadedImage) setCurrentStep("processing");
+        if (activeMode === "tryon" && uploadedImage && isConfigValid()) {
+          setCurrentStep("processing");
+        }
       } else if (type === 'product') {
         setProductImage(result);
-        if (activeMode === "crossplatform") setCurrentStep("processing");
+        if (activeMode === "crossplatform" && isConfigValid()) {
+          setCurrentStep("processing");
+        }
       }
     };
     reader.readAsDataURL(file);
-  }, [activeMode, uploadedImage, t]);
+  }, [activeMode, uploadedImage, t, cloudinaryConfig]);
 
   const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>, type: 'person' | 'garment' | 'product') => {
     event.preventDefault();
@@ -169,24 +198,35 @@ const Enhancer = () => {
       const result = e.target?.result as string;
       if (type === 'person') {
         setUploadedImage(result);
-        if (activeMode === "multiview") setCurrentStep("processing");
+        if (activeMode === "multiview") {
+          if (isConfigValid()) {
+            setCurrentStep("processing");
+          } else {
+            setConfigError('Please configure Cloudinary credentials first.');
+            setShowConfig(true);
+          }
+        }
       } else if (type === 'garment') {
         setGarmentImage(result);
-        if (activeMode === "tryon" && uploadedImage) setCurrentStep("processing");
+        if (activeMode === "tryon" && uploadedImage && isConfigValid()) {
+          setCurrentStep("processing");
+        }
       } else if (type === 'product') {
         setProductImage(result);
-        if (activeMode === "crossplatform") setCurrentStep("processing");
+        if (activeMode === "crossplatform" && isConfigValid()) {
+          setCurrentStep("processing");
+        }
       }
     };
     reader.readAsDataURL(file);
-  }, [activeMode, uploadedImage, t]);
+  }, [activeMode, uploadedImage, t, cloudinaryConfig]);
 
   const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   }, []);
 
   const processMultiview = async () => {
-    if (!uploadedImage || !cloudinaryConfig) return;
+    if (!uploadedImage || !isConfigValid()) return;
     setIsProcessing(true);
     setCurrentStep("processing");
     setProcessingProgress(0);
@@ -213,13 +253,14 @@ const Enhancer = () => {
     } catch (error) {
       showError(error instanceof Error ? error.message : "Processing failed. Please check your Cloudinary configuration.");
       console.error("Multiview processing error:", error);
+      setCurrentStep("upload");
     } finally {
       setIsProcessing(false);
     }
   };
 
   const processTryon = async () => {
-    if (!uploadedImage || !garmentImage || !cloudinaryConfig) return;
+    if (!uploadedImage || !garmentImage || !isConfigValid()) return;
     setIsProcessing(true);
     setCurrentStep("processing");
     setProcessingProgress(0);
@@ -245,13 +286,14 @@ const Enhancer = () => {
     } catch (error) {
       showError(error instanceof Error ? error.message : "Processing failed. Please check your Cloudinary configuration.");
       console.error("Try-on processing error:", error);
+      setCurrentStep("upload");
     } finally {
       setIsProcessing(false);
     }
   };
 
   const processCrossPlatform = async () => {
-    if (!productImage || !cloudinaryConfig) return;
+    if (!productImage || !isConfigValid()) return;
     setIsProcessing(true);
     setCurrentStep("processing");
     setProcessingProgress(0);
@@ -284,6 +326,7 @@ const Enhancer = () => {
     } catch (error) {
       showError(error instanceof Error ? error.message : "Processing failed. Please check your Cloudinary configuration.");
       console.error("Cross-platform processing error:", error);
+      setCurrentStep("upload");
     } finally {
       setIsProcessing(false);
     }
@@ -323,6 +366,21 @@ const Enhancer = () => {
 
   const updateOption = <K extends keyof ProcessingOptions>(key: K, value: ProcessingOptions[K]) => {
     setOptions(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleSaveConfig = () => {
+    if (cloudinaryConfig.cloudName && cloudinaryConfig.uploadPreset) {
+      try {
+        saveCloudinaryConfig(cloudinaryConfig);
+        setConfigError(null);
+        setShowConfig(false);
+        showSuccess('Cloudinary configuration saved!');
+      } catch (error) {
+        showError(error instanceof Error ? error.message : "Failed to save configuration");
+      }
+    } else {
+      showError('Please fill in both Cloud Name and Upload Preset');
+    }
   };
 
   const renderUploadStep = () => {
@@ -659,12 +717,7 @@ const Enhancer = () => {
                     <li>Create a Cloudinary account at <a href="https://cloudinary.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">cloudinary.com</a></li>
                     <li>Get your Cloud Name from the Dashboard</li>
                     <li>Create an Unsigned Upload Preset in Settings → Upload</li>
-                    <li>Set environment variables in your deployment:
-                      <code className="block mt-2 bg-gray-100 p-2 rounded text-xs font-mono">
-                        VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name<br/>
-                        VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
-                      </code>
-                    </li>
+                    <li>Enter your credentials in the settings panel above</li>
                   </ol>
                 </div>
               </div>
@@ -673,15 +726,19 @@ const Enhancer = () => {
         </div>
       )}
 
-      {showConfig && cloudinaryConfig && (
+      {showConfig && (
         <div className="bg-white border-b shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-semibold text-gray-900">Cloudinary Configuration</h3>
+              <Button variant="ghost" size="sm" onClick={() => setShowConfig(false)}>Close</Button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label className="text-sm font-medium mb-1 block">Cloud Name</Label>
                 <Input 
                   value={cloudinaryConfig.cloudName}
-                  onChange={(e) => setCloudinaryConfig(prev => prev ? { ...prev, cloudName: e.target.value } : null)}
+                  onChange={(e) => setCloudinaryConfig(prev => ({ ...prev, cloudName: e.target.value }))}
                   placeholder="your-cloud-name"
                 />
               </div>
@@ -689,20 +746,25 @@ const Enhancer = () => {
                 <Label className="text-sm font-medium mb-1 block">Upload Preset (Unsigned)</Label>
                 <Input 
                   value={cloudinaryConfig.uploadPreset}
-                  onChange={(e) => setCloudinaryConfig(prev => prev ? { ...prev, uploadPreset: e.target.value } : null)}
+                  onChange={(e) => setCloudinaryConfig(prev => ({ ...prev, uploadPreset: e.target.value }))}
                   placeholder="your-unsigned-preset"
                 />
               </div>
             </div>
+            <div className="mt-3 flex justify-end">
+              <Button onClick={handleSaveConfig}>
+                Save Configuration
+              </Button>
+            </div>
             <p className="text-xs text-gray-500 mt-2">
-              Note: For production, set these as environment variables instead of using this UI.
+              Note: These credentials are stored only in your browser's local storage. For production, use a backend proxy to keep credentials secure.
             </p>
           </div>
         </div>
       )}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {configError && (
+        {configError && !showConfig && (
           <div className="text-center py-12">
             <div className="max-w-2xl mx-auto">
               <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-6">
@@ -710,13 +772,16 @@ const Enhancer = () => {
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Configuration Required</h2>
               <p className="text-gray-600 mb-6">
-                This application requires Cloudinary credentials to function. Please configure your credentials as described above.
+                This application requires Cloudinary credentials to function. Please configure your credentials in the settings panel above.
               </p>
+              <Button onClick={() => setShowConfig(true)} className="rounded-full">
+                Open Settings
+              </Button>
             </div>
           </div>
         )}
 
-        {!configError && (
+        {!configError || showConfig ? (
           <>
             <div className="mb-8">
               <Tabs value={activeMode} onValueChange={(value) => setActiveMode(value as FeatureMode)} className="w-full">
@@ -773,7 +838,7 @@ const Enhancer = () => {
               </div>
             )}
           </>
-        )}
+        ) : null}
       </main>
 
       <footer className="bg-gray-900 text-gray-300 py-8 mt-16">
