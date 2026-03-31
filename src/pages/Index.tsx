@@ -2,6 +2,7 @@ import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import NewsletterSignup from "@/components/newsletter";
 
 const Index = () => {
   return (
@@ -160,8 +161,8 @@ const Index = () => {
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:-translate-y-1">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                      <img src={testimonial.avatar} alt={testimonial.name} className="w-8 h-8 rounded-full" />
+                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                      <img src={testimonial.avatar} alt={testimonial.name} className="w-full h-full object-cover" />
                     </div>
                     <div className="ml-4">
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">{testimonial.name}</h3>
@@ -362,6 +363,17 @@ const Index = () => {
             {/* Decorative elements */}
             <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3"></div>
+          </div>
+        </section>
+
+        {/* Newsletter Section */}
+        <section className="mb-20">
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-0 bg-white/80 backdrop-blur-sm shadow-xl">
+              <CardContent className="p-8">
+                <NewsletterSignup />
+              </CardContent>
+            </Card>
           </div>
         </section>
       </main>
