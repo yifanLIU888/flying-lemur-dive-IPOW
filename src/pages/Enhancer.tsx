@@ -78,6 +78,7 @@ const Enhancer = () => {
     tryonRight?: string;
     platformContents?: Array<{
       platform: string;
+      name: string;
       image?: string;
       title: string;
       description: string;
@@ -443,25 +444,28 @@ const Enhancer = () => {
           { view: 'back', label: t("enhancer.backView"), icon: Camera },
           { view: 'left', label: t("enhancer.leftView"), icon: Camera },
           { view: 'right', label: t("enhancer.rightView"), icon: Camera }
-        ].map(({ view, label, icon: Icon }) => (
+        ].map(({ view, label, icon: Icon }) => {
+          const imageUrl = processedResults[view as keyof typeof processedResults] as string | undefined;
+          return (
           <Card key={view} className="border-0 bg-white/80 backdrop-blur-sm shadow-xl overflow-hidden">
             <CardContent className="p-4">
               <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
-                {processedResults[view as keyof typeof processedResults] ? (
-                  <img src={processedResults[view as keyof typeof processedResults]} alt={label} className="w-full h-full object-contain" />
+                {imageUrl ? (
+                  <img src={imageUrl} alt={label} className="w-full h-full object-contain" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center"><Icon className="w-12 h-12 text-gray-400" /></div>
                 )}
               </div>
               <p className="text-center text-sm font-medium text-gray-700">{label}</p>
-              {processedResults[view as keyof typeof processedResults] && (
-                <Button onClick={() => downloadImage(processedResults[view as keyof typeof processedResults]!, `ipow-3d-${view}-${Date.now()}.png`)} variant="outline" size="sm" className="w-full mt-2 rounded-full">
+              {imageUrl && (
+                <Button onClick={() => downloadImage(imageUrl, `ipow-3d-${view}-${Date.now()}.png`)} variant="outline" size="sm" className="w-full mt-2 rounded-full">
                   <Download className="w-4 h-4 mr-2" />{t("enhancer.download")}
                 </Button>
               )}
             </CardContent>
           </Card>
-        ))}
+          );
+        })}
       </div>
 
       <div className="text-center">
@@ -486,25 +490,28 @@ const Enhancer = () => {
           { view: 'tryonBack', label: t("enhancer.backView"), icon: Shirt },
           { view: 'tryonLeft', label: t("enhancer.leftView"), icon: Shirt },
           { view: 'tryonRight', label: t("enhancer.rightView"), icon: Shirt }
-        ].map(({ view, label, icon: Icon }) => (
+        ].map(({ view, label, icon: Icon }) => {
+          const imageUrl = processedResults[view as keyof typeof processedResults] as string | undefined;
+          return (
           <Card key={view} className="border-0 bg-white/80 backdrop-blur-sm shadow-xl overflow-hidden">
             <CardContent className="p-4">
               <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
-                {processedResults[view as keyof typeof processedResults] ? (
-                  <img src={processedResults[view as keyof typeof processedResults]} alt={label} className="w-full h-full object-contain" />
+                {imageUrl ? (
+                  <img src={imageUrl} alt={label} className="w-full h-full object-contain" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center"><Icon className="w-12 h-12 text-gray-400" /></div>
                 )}
               </div>
               <p className="text-center text-sm font-medium text-gray-700">{label} {t("enhancer.viewLabel")}</p>
-              {processedResults[view as keyof typeof processedResults] && (
-                <Button onClick={() => downloadImage(processedResults[view as keyof typeof processedResults]!, `ipow-tryon-${view}-${Date.now()}.png`)} variant="outline" size="sm" className="w-full mt-2 rounded-full">
+              {imageUrl && (
+                <Button onClick={() => downloadImage(imageUrl, `ipow-tryon-${view}-${Date.now()}.png`)} variant="outline" size="sm" className="w-full mt-2 rounded-full">
                   <Download className="w-4 h-4 mr-2" />{t("enhancer.download")}
                 </Button>
               )}
             </CardContent>
           </Card>
-        ))}
+          );
+        })}
       </div>
 
       <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-8">

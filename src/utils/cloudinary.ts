@@ -3,7 +3,7 @@
  * 使用 Unsigned Upload Preset 实现安全的前端上传
  */
 
-interface CloudinaryConfig {
+export interface CloudinaryConfig {
   cloudName: string;
   uploadPreset: string;
 }
