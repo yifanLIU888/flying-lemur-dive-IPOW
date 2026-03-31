@@ -1,6 +1,17 @@
 /**
  * Cloudinary 图像处理工具
  * 使用 Unsigned Upload Preset 实现安全的前端上传
+ *
+ * SECURITY NOTE:
+ * - This is a CLIENT-SIDE ONLY configuration
+ * - Users provide their own Cloudinary credentials
+ * - No API keys are stored in the codebase
+ * - For production, users should create their own Cloudinary account
+ *
+ * If you need to use a backend service:
+ * 1. Create a server endpoint that handles uploads
+ * 2. Store Cloudinary credentials in server environment variables
+ * 3. Never expose API keys in client-side code
  */
 
 export interface CloudinaryConfig {
@@ -8,7 +19,8 @@ export interface CloudinaryConfig {
   uploadPreset: string;
 }
 
-// 默认配置（请替换为你自己的 Cloudinary 配置）
+// 默认配置（示例用途 only）
+// 生产环境：用户应提供自己的 Cloudinary 配置
 const DEFAULT_CONFIG: CloudinaryConfig = {
   cloudName: "demo", // 替换为你的 Cloud Name
   uploadPreset: "ml_default" // 替换为你的 Unsigned Upload Preset
@@ -16,11 +28,22 @@ const DEFAULT_CONFIG: CloudinaryConfig = {
 
 /**
  * 上传图片到 Cloudinary
+ * IMPORTANT: In production, this should be done through a backend proxy
+ * to protect against abuse and to implement proper rate limiting
  */
 export const uploadToCloudinary = async (
   file: File,
   config: CloudinaryConfig = DEFAULT_CONFIG
 ): Promise<string> => {
+  // Client-side validation
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Invalid file type. Only images are allowed.');
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error('File size exceeds 10MB limit.');
+  }
+
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", config.uploadPreset);

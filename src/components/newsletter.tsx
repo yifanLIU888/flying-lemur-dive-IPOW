@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { showSuccess, showError } from "@/utils/toast";
 import { useState } from "react";
-import { validateEmail, sanitizeString, checkRateLimit } from "@/utils/security";
+import { validateEmail, sanitizeString, validateFile } from "@/utils/security";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const NewsletterSignup = () => {
@@ -30,17 +30,22 @@ const NewsletterSignup = () => {
       return;
     }
 
-    // Rate limiting (5 submissions per 30 minutes per IP/session)
-    const rateLimitKey = `newsletter_${sanitizedEmail}`;
-    if (!checkRateLimit(rateLimitKey, 5, 30 * 60 * 1000)) {
-      showError(t("toast.rateLimit"));
-      return;
-    }
+    // IMPORTANT: Rate limiting must be implemented server-side
+    // Client-side check is only for UX, not security
+    // const rateLimitKey = `newsletter_${sanitizedEmail}`;
+    // if (!checkRateLimit(rateLimitKey, 5, 30 * 60 * 1000)) {
+    //   showError(t("toast.rateLimit"));
+    //   return;
+    // }
 
     setIsSubmitting(true);
 
     try {
       // Simulate API call - replace with actual endpoint
+      // In production, this should call your backend which handles:
+      // 1. Server-side rate limiting by IP/user
+      // 2. Server-side validation
+      // 3. Secure storage
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       showSuccess(t("toast.subscribeSuccess"));
