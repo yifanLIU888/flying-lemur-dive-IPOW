@@ -8,6 +8,7 @@ import NewsletterSignup from "@/components/newsletter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useNavigate } from "react-router-dom";
+import Logo from "@/components/logo"; // Import the new Logo component
 
 const Index = () => {
   const { t } = useLanguage();
@@ -21,11 +22,9 @@ const Index = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">P</span>
+                <span className="text-white font-bold text-sm">I</span>
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Picsetai
-              </h1>
+              <Logo />
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
@@ -265,8 +264,7 @@ const Index = () => {
                 <p className="text-center font-medium text-gray-700">{t("beforeAfter.before")}</p>
               </CardContent>
             </Card>
-            
-            <Card className="overflow-hidden border-0 shadow-xl">
+                        <Card className="overflow-hidden border-0 shadow-xl">
               <div className="aspect-video bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <div className="text-white text-center p-8">
                   <div className="text-4xl mb-2">✨</div>
@@ -329,8 +327,7 @@ const Index = () => {
                   t("plan.enterprise.feature4"),
                   t("plan.enterprise.feature5")
                 ],
-                highlighted: false
-              }
+                highlighted: false              }
             ].map((plan, index) => (
               <Card key={index} className={`${plan.highlighted ? 'border-2 border-purple-500 shadow-2xl scale-105' : 'border'} bg-white`}>
                 <CardContent className="p-8">
@@ -407,9 +404,9 @@ const Index = () => {
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">P</span>
+                  <span className="text-white font-bold text-sm">I</span>
                 </div>
-                <h3 className="text-lg font-bold text-white">Picsetai</h3>
+                <h3 className="text-lg font-bold text-white">IPOW</h3>
               </div>
               <p className="text-sm text-gray-400 mb-4">
                 {t("footer.description")}
@@ -454,7 +451,7 @@ const Index = () => {
           
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400 mb-4 md:mb-0">
-              © 2024 Picsetai. {t("footer.rights")}.
+              © 2024 IPOW. {t("footer.rights")}.
             </p>
             <div className="flex items-center space-x-2 text-sm text-gray-400">
               <span>{t("footer.madeWith")}</span>
