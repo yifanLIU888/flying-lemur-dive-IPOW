@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import {   Upload, 
-  Download,   Image as ImageIcon, 
+import { 
+  Upload, 
+  Download, 
   Sparkles, 
-  ArrowLeft,   Zap,
+  ArrowLeft, 
+  Zap,
   Wand2,
   Crop,
   Palette,
@@ -23,7 +24,8 @@ import {   Upload,
   RotateCcw,
   CheckCircle2,
   Loader2,
-  Scissors // Using Scissors instead of Scissors2
+  Image as ImageIcon,
+  FileImage
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -50,6 +52,7 @@ const Enhancer = () => {
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [enhancementOptions, setEnhancementOptions] = useState<EnhancementOptions>({
     smartEnhance: true,
     backgroundRemove: false,
@@ -65,18 +68,28 @@ const Enhancer = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Reset file input when step changes to upload
+  useEffect(() => {
+    if (step === "upload" && fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [step]);
+
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
   }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
     
     const files = e.dataTransfer.files;
@@ -105,80 +118,97 @@ const Enhancer = () => {
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      setImage(e.target?.result as string);
-      setStep("enhance");
+      if (e.target?.result) {
+        setImage(e.target.result as string);
+        setStep("enhance");
+        showSuccess("图片上传成功！");
+      }
+    };
+    reader.onerror = () => {
+      showError("图片读取失败，请重试");
     };
     reader.readAsDataURL(file);
   };
 
-  const startProcessing = async () => {
+  const processImage = useCallback(() => {
+    if (!image || !canvasRef.current) {
+      showError("请先上传图片");
+      return;
+    }
+
+    setIsProcessing(true);
     setStep("processing");
     setProgress(0);
 
-    // Simulate processing with progress
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + Math.random() * 15;
-      });
-    }, 300);
-
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
     
-    clearInterval(interval);
-    setProgress(100);
-    
-    // Apply enhancements using canvas
-    if (image && canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
       
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
+      if (ctx) {
+        // Build filter string based on options
+        let filters = [];
         
-        if (ctx) {
-          // Apply filters based on options
-          let filter = "";
-          if (enhancementOptions.brightness !== 0) {
-            filter += `brightness(${100 + enhancementOptions.brightness}%) `;
-          }
-          if (enhancementOptions.contrast !== 0) {
-            filter += `contrast(${100 + enhancementOptions.contrast}%) `;
-          }
-          if (enhancementOptions.saturation !== 0) {
-            filter += `saturate(${100 + enhancementOptions.saturation}%) `;
-          }
-          
-          ctx.filter = filter || "none";
-          ctx.drawImage(img, 0, 0);
-          
-          // Apply smart enhancement simulation
-          if (enhancementOptions.smartEnhance) {
-            ctx.filter = "contrast(110%) saturate(115%) brightness(105%)";
-            ctx.drawImage(img, 0, 0);
-          }
-          
-          setProcessedImage(canvas.toDataURL("image/png"));
-          setStep("result");
-          showSuccess("图片增强完成！");
+        if (enhancementOptions.brightness !== 0) {
+          filters.push(`brightness(${100 + enhancementOptions.brightness}%)`);
         }
-      };
-      
-      img.src = image;
-    }
-  };
+        if (enhancementOptions.contrast !== 0) {
+          filters.push(`contrast(${100 + enhancementOptions.contrast}%)`);
+        }
+        if (enhancementOptions.saturation !== 0) {
+          filters.push(`saturate(${100 + enhancementOptions.saturation}%)`);
+        }
+        
+        // Apply smart enhancement
+        if (enhancementOptions.smartEnhance) {
+          filters.push("contrast(110%)", "saturate(115%)", "brightness(105%)");
+        }
+        
+        // Apply color correction
+        if (enhancementOptions.colorCorrection) {
+          filters.push("contrast(105%)", "saturate(110%)");
+        }
+        
+        ctx.filter = filters.length > 0 ? filters.join(" ") : "none";
+        ctx.drawImage(img, 0, 0);
+        
+        // Simulate processing progress
+        let currentProgress = 0;
+        const progressInterval = setInterval(() => {
+          currentProgress += Math.random() * 15;
+          if (currentProgress >= 100) {
+            currentProgress = 100;
+            clearInterval(progressInterval);
+            
+            const resultDataUrl = canvas.toDataURL("image/png");
+            setProcessedImage(resultDataUrl);
+            setStep("result");
+            setIsProcessing(false);
+            showSuccess("图片增强完成！");
+          }
+          setProgress(currentProgress);
+        }, 200);
+      }
+    };
+    
+    img.onerror = () => {
+      showError("图片处理失败，请重试");
+      setIsProcessing(false);
+      setStep("enhance");
+    };
+    
+    img.src = image;
+  }, [image, enhancementOptions]);
 
   const resetAll = () => {
     setImage(null);
     setProcessedImage(null);
     setProgress(0);
     setStep("upload");
+    setIsProcessing(false);
     setEnhancementOptions({
       smartEnhance: true,
       backgroundRemove: false,
@@ -190,17 +220,28 @@ const Enhancer = () => {
       saturation: 0,
       sharpness: 0,
     });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const downloadImage = () => {
     if (processedImage) {
       const link = document.createElement("a");
       link.href = processedImage;
-      link.download = "enhanced-image.png";
+      link.download = `enhanced-image-${Date.now()}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       showSuccess("图片已下载");
+    } else {
+      showError("没有可下载的图片");
+    }
+  };
+
+  const handleUploadClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -250,7 +291,14 @@ const Enhancer = () => {
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
+              onClick={handleUploadClick}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  handleUploadClick();
+                }
+              }}
             >
               <input
                 ref={fileInputRef}
@@ -261,11 +309,18 @@ const Enhancer = () => {
               />
               <Upload className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-lg font-medium text-gray-700 mb-2">
-                拖放图片到这里              </p>
+                拖放图片到这里
+              </p>
               <p className="text-sm text-gray-500 mb-4">
                 支持 JPG, PNG, WebP 格式，最大 10MB
               </p>
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full">
+              <Button 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUploadClick();
+                }}
+              >
                 选择图片
               </Button>
             </div>
@@ -279,11 +334,11 @@ const Enhancer = () => {
             <div className="lg:col-span-2">
               <Card className="overflow-hidden">
                 <CardContent className="p-4">
-                  <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                  <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                     <img
                       src={image}
                       alt="Uploaded"
-                      className="w-full h-full object-contain"
+                      className="max-w-full max-h-full object-contain"
                     />
                   </div>
                 </CardContent>
@@ -436,8 +491,8 @@ const Enhancer = () => {
                     <div>
                       <div className="flex justify-between mb-2">
                         <Label className="flex items-center gap-2">
-                          <Scissors className="w-4 h-4" /> {/* Using Scissors instead of Scissors2 */}
-                          <span>锐度</span>
+                          <ImageIcon className="w-4 h-4" />
+                          锐度
                         </Label>
                         <span className="text-sm text-gray-500">{enhancementOptions.sharpness}%</span>
                       </div>
@@ -456,7 +511,8 @@ const Enhancer = () => {
               </Card>
 
               <Button
-                onClick={startProcessing}
+                onClick={processImage}
+                disabled={isProcessing}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full py-6 text-lg"
               >
                 <Zap className="w-5 h-5 mr-2" />
@@ -517,12 +573,12 @@ const Enhancer = () => {
               <Card>
                 <CardContent className="p-4">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">增强前</h3>
-                  <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                  <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                     {image && (
                       <img
                         src={image}
                         alt="Before"
-                        className="w-full h-full object-contain"
+                        className="max-w-full max-h-full object-contain"
                       />
                     )}
                   </div>
@@ -538,11 +594,11 @@ const Enhancer = () => {
                       完成
                     </Badge>
                   </div>
-                  <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                  <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                     <img
                       src={processedImage}
                       alt="After"
-                      className="w-full h-full object-contain"
+                      className="max-w-full max-h-full object-contain"
                     />
                   </div>
                 </CardContent>
