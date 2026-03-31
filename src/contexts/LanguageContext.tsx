@@ -181,7 +181,7 @@ const translations: Record<string, Record<Language, string>> = {
   "toast.processingComplete": { zh: "处理完成！", en: "Processing complete!" },
   "toast.downloadStarted": { zh: "下载已开始！", en: "Download started!" },
 
-  // Enhancer Page - New Translations
+  // Enhancer Page
   "enhancer.title": { zh: "AI 图像增强工具", en: "AI Image Enhancer" },
   "enhancer.multiview": { zh: "人物多角度生成", en: "Multi-View Generation" },
   "enhancer.tryon": { zh: "虚拟试穿", en: "Virtual Try-On" },
@@ -224,5 +224,24 @@ const translations: Record<string, Record<Language, string>> = {
   "enhancer.pinduoduo": { zh: "拼多多", en: "Pinduoduo" },
   "enhancer.amazon": { zh: "Amazon", en: "Amazon" },
   "enhancer.shopee": { zh: "Shopee", en: "Shopee" },
-  "enhancer.social": { zh: "社交媒体", en: "Social Media" }
+  "enhancer.social": { zh: "社交媒体", en: "Social Media" },
+  "enhancer.uploadPersonDesc": { zh: "拖放或点击选择清晰的人物照片", en: "Drag & drop or click to select a clear photo of a person" },
+  "enhancer.supportsFormat": { zh: "支持格式：JPG, PNG, WebP（最大 10MB）", en: "Supports: JPG, PNG, WebP (Max 10MB)" },
+  "enhancer.uploaded": { zh: "✓ 已上传", en: "✓ Uploaded" },
+  "enhancer.dragOrClick": { zh: "拖放或点击", en: "Drag & drop or click" },
+  "enhancer.backToHome": { zh: "返回首页", en: "Back to Home" },
+  "enhancer.3dModelGen": { zh: "3D 模型生成", en: "3D Model Gen" },
+  "enhancer.virtualTryOn": { zh: "虚拟试穿", en: "Virtual Try-On" },
+  "enhancer.crossPlatform": { zh: "跨平台内容", en: "Cross-Platform" },
+  "enhancer.modeDescMultiview": { zh: "从单张照片生成正面、背面、左侧、右侧的 3D 模型", en: "Generate 3D model with front, back, left, and right views from a single photo" },
+  "enhancer.modeDescTryon": { zh: "上传人物和服装照片，查看各角度的虚拟试穿效果", en: "Upload a person photo and garment to see virtual try-on from all angles" },
+  "enhancer.modeDescCrossplatform": { zh: "为国内外电商平台生成专属营销内容", en: "Generate platform-specific marketing content for Chinese & global e-commerce" },
+  "enhancer.aiWorking": { zh: "AI 正在施展魔法，通常只需几秒钟...", en: "Our AI is working its magic. This usually takes a few seconds..." },
+  "enhancer.viewAllAngles": { zh: "从各个角度查看生成的 3D 模型", en: "View your generated 3D model from all angles" },
+  "enhancer.viewLabel": { zh: "视图", en: "View" },
+  "enhancer.tryDifferentGarment": { zh: "想看看其他服装的效果？上传新的服装图片。", en: "Want to see how a different clothing item looks? Upload a new garment image." },
+  "enhancer.readyContent": { zh: "适用于多个平台的即用型营销内容", en: "Ready-to-use marketing content for multiple platforms" },
+  "enhancer.contentLabel": { zh: "内容", en: "Content" },
+  "enhancer.copyright": { zh: "版权所有", en: "All rights reserved" },
+  "enhancer.madeWith": { zh: "用 ❤️ 由 Dyad 制作", en: "Made with ❤️ by Dyad" }
 };
