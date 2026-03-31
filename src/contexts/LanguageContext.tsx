@@ -86,7 +86,7 @@ const translations: Record<string, Record<Language, string>> = {
   "testimonials.subtitle": { zh: "来自满意客户的真实反馈", en: "Real feedback from satisfied customers" },
   "testimonial.sarah.name": { zh: "莎拉·约翰逊", en: "Sarah Johnson" },
   "testimonial.sarah.role": { zh: "摄影师", en: "Photographer" },
-  "testimonial.sarah.quote": { zh: "Picsetai 将我的作品集照片从优秀提升到惊艳。AI 增强功能令人难以置信！", en: "Picsetai transformed my portfolio photos from good to stunning. The AI enhancements are incredible!" },
+  "testimonial.sarah.quote": { zh: "IPOW 将我的作品集照片从优秀提升到惊艳。AI 增强功能令人难以置信！", en: "IPOW transformed my portfolio photos from good to stunning. The AI enhancements are incredible!" },
   "testimonial.michael.name": { zh: "迈克尔·陈", en: "Michael Chen" },
   "testimonial.michael.role": { zh: "电商经理", en: "E-commerce Manager" },
   "testimonial.michael.quote": { zh: "背景移除功能为我节省了数小时的编辑时间。强烈推荐！", en: "The background removal feature saved me hours of editing time. Highly recommended!" },
@@ -176,4 +176,8 @@ const translations: Record<string, Record<Language, string>> = {
   "toast.emailRequired": { zh: "请输入邮箱地址", en: "Please enter an email address" },
   "toast.emailInvalid": { zh: "请输入有效的邮箱地址", en: "Please enter a valid email address" },
   "toast.rateLimit": { zh: "提交次数过多，请稍后再试。", en: "Too many submissions. Please try again later." },
+  "toast.invalidFileType": { zh: "请上传图片文件", en: "Please upload an image file" },
+  "toast.fileTooLarge": { zh: "文件大小必须小于 10MB", en: "File size must be less than 10MB" },
+  "toast.processingComplete": { zh: "处理完成！", en: "Processing complete!" },
+  "toast.downloadStarted": { zh: "下载已开始！", en: "Download started!" },
 };

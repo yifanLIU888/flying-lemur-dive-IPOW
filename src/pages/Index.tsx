@@ -8,7 +8,7 @@ import NewsletterSignup from "@/components/newsletter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useNavigate } from "react-router-dom";
-import Logo from "@/components/logo"; // Import the new Logo component
+import Logo from "@/components/logo";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -21,9 +21,6 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">I</span>
-              </div>
               <Logo />
             </div>
             <nav className="hidden md:flex items-center space-x-8">
@@ -403,9 +400,6 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">I</span>
-                </div>
                 <h3 className="text-lg font-bold text-white">IPOW</h3>
               </div>
               <p className="text-sm text-gray-400 mb-4">
