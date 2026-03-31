@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import { 
   ArrowLeft, 
   Wand2,
@@ -26,13 +27,21 @@ import {
   Share2,
   Monitor,
   Sparkles,
-  Download
+  Download,
+  Settings
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { showSuccess, showError } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/logo";
+import { 
+  uploadToCloudinary, 
+  generateTransformedUrl, 
+  extractPublicId,
+  TRANSFORMATIONS,
+  type CloudinaryConfig 
+} from "@/utils/cloudinary";
 
 type ProcessingStep = "upload" | "processing" | "result";
 type FeatureMode = "multiview" | "tryon" | "crossplatform";
@@ -83,6 +92,13 @@ const Enhancer = () => {
     smoothEdges: true,
     preserveColors: false
   });
+
+  // Cloudinary 配置
+  const [cloudinaryConfig, setCloudinaryConfig] = useState<CloudinaryConfig>({
+    cloudName: "demo",
+    uploadPreset: "ml_default"
+  });
+  const [showConfig, setShowConfig] = useState(false);
 
   useEffect(() => {
     setCurrentStep("upload");
@@ -162,22 +178,35 @@ const Enhancer = () => {
     setCurrentStep("processing");
     setProcessingProgress(0);
 
-    const steps = [20, 40, 60, 80, 100];
-    for (const progress of steps) {
-      await new Promise(resolve => setTimeout(resolve, 600));
-      setProcessingProgress(progress);
+    try {
+      // 模拟上传到 Cloudinary（实际使用时取消注释）
+      // const file = await fetch(uploadedImage).then(r => r.blob());
+      // const cloudinaryUrl = await uploadToCloudinary(new File([file], "person.jpg", { type: "image/jpeg" }), cloudinaryConfig);
+      // const publicId = extractPublicId(cloudinaryUrl);
+      
+      // 使用 Cloudinary URL 转换生成多角度视图
+      // 注意：这里使用示例 public_id，实际应使用上传后返回的 public_id
+      const publicId = "sample"; 
+      
+      setProcessingProgress(25);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      setProcessedResults({
+        front: generateTransformedUrl(publicId, TRANSFORMATIONS.smartCrop(800, 800), cloudinaryConfig),
+        back: generateTransformedUrl(publicId, [...TRANSFORMATIONS.smartCrop(800, 800), "a_180"], cloudinaryConfig),
+        left: generateTransformedUrl(publicId, [...TRANSFORMATIONS.smartCrop(800, 800), "a_90"], cloudinaryConfig),
+        right: generateTransformedUrl(publicId, [...TRANSFORMATIONS.smartCrop(800, 800), "a_270"], cloudinaryConfig)
+      });
+
+      setProcessingProgress(100);
+      setCurrentStep("result");
+      showSuccess(t("toast.processingComplete"));
+    } catch (error) {
+      showError("Processing failed. Please check your Cloudinary configuration.");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
     }
-
-    setProcessedResults({
-      front: uploadedImage,
-      back: uploadedImage,
-      left: uploadedImage,
-      right: uploadedImage
-    });
-
-    setCurrentStep("result");
-    setIsProcessing(false);
-    showSuccess(t("toast.processingComplete"));
   };
 
   const processTryon = async () => {
@@ -186,22 +215,29 @@ const Enhancer = () => {
     setCurrentStep("processing");
     setProcessingProgress(0);
 
-    const steps = [20, 40, 60, 80, 100];
-    for (const progress of steps) {
-      await new Promise(resolve => setTimeout(resolve, 600));
-      setProcessingProgress(progress);
+    try {
+      setProcessingProgress(25);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // 模拟虚拟试穿结果
+      const publicId = "fashion/sample";
+      
+      setProcessedResults({
+        tryonFront: generateTransformedUrl(publicId, TRANSFORMATIONS.smartCrop(800, 800), cloudinaryConfig),
+        tryonBack: generateTransformedUrl(publicId, [...TRANSFORMATIONS.smartCrop(800, 800), "a_180"], cloudinaryConfig),
+        tryonLeft: generateTransformedUrl(publicId, [...TRANSFORMATIONS.smartCrop(800, 800), "a_90"], cloudinaryConfig),
+        tryonRight: generateTransformedUrl(publicId, [...TRANSFORMATIONS.smartCrop(800, 800), "a_270"], cloudinaryConfig)
+      });
+
+      setProcessingProgress(100);
+      setCurrentStep("result");
+      showSuccess(t("toast.processingComplete"));
+    } catch (error) {
+      showError("Processing failed. Please check your Cloudinary configuration.");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
     }
-
-    setProcessedResults({
-      tryonFront: uploadedImage,
-      tryonBack: uploadedImage,
-      tryonLeft: uploadedImage,
-      tryonRight: uploadedImage
-    });
-
-    setCurrentStep("result");
-    setIsProcessing(false);
-    showSuccess(t("toast.processingComplete"));
   };
 
   const processCrossPlatform = async () => {
@@ -210,28 +246,37 @@ const Enhancer = () => {
     setCurrentStep("processing");
     setProcessingProgress(0);
 
-    const steps = [20, 40, 60, 80, 100];
-    for (const progress of steps) {
-      await new Promise(resolve => setTimeout(resolve, 600));
-      setProcessingProgress(progress);
+    try {
+      setProcessingProgress(25);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      const publicId = "products/sample";
+      
+      const platforms = [
+        { platform: "xiaohongshu", name: t("enhancer.xiaohongshu"), title: "这款好物让我爱不释手！✨", description: "今天给大家推荐一款超赞的产品，质量非常好，性价比超高！", tags: ["好物推荐", "必买清单", "生活好物"] },
+        { platform: "jd", name: t("enhancer.jd"), title: "高品质商品，值得信赖", description: "正品保障，极速配送。本产品采用优质材料制作。", tags: ["正品保障", "极速配送", "品质之选"] },
+        { platform: "pinduoduo", name: t("enhancer.pinduoduo"), title: "超值好货，拼团更优惠！", description: "工厂直供，价格实惠！多人拼团享受更低价格。", tags: ["工厂直供", "拼团优惠", "实惠好货"] },
+        { platform: "amazon", name: t("enhancer.amazon"), title: "Premium Quality Product", description: "High-quality materials, excellent craftsmanship. Perfect for everyday use.", tags: ["Premium", "High Quality", "Best Seller"] },
+        { platform: "shopee", name: t("enhancer.shopee"), title: "Barang Berkualitas Premium", description: "Produk berkualitas tinggi dengan harga terjangkau.", tags: ["Premium Quality", "Fast Shipping", "Best Deals"] },
+        { platform: "social", name: t("enhancer.social"), title: "This product is absolutely amazing! 🤩", description: "Just got my hands on this incredible product and I'm already in love!", tags: ["MustHave", "ProductReview", "Lifestyle"] }
+      ];
+
+      setProcessedResults({
+        platformContents: platforms.map(p => ({ 
+          ...p, 
+          image: generateTransformedUrl(publicId, TRANSFORMATIONS.smartCrop(600, 600), cloudinaryConfig)
+        }))
+      });
+
+      setProcessingProgress(100);
+      setCurrentStep("result");
+      showSuccess(t("toast.processingComplete"));
+    } catch (error) {
+      showError("Processing failed. Please check your Cloudinary configuration.");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
     }
-
-    const platforms = [
-      { platform: "xiaohongshu", name: t("enhancer.xiaohongshu"), title: "这款好物让我爱不释手！✨", description: "今天给大家推荐一款超赞的产品，质量非常好，性价比超高！", tags: ["好物推荐", "必买清单", "生活好物"] },
-      { platform: "jd", name: t("enhancer.jd"), title: "高品质商品，值得信赖", description: "正品保障，极速配送。本产品采用优质材料制作。", tags: ["正品保障", "极速配送", "品质之选"] },
-      { platform: "pinduoduo", name: t("enhancer.pinduoduo"), title: "超值好货，拼团更优惠！", description: "工厂直供，价格实惠！多人拼团享受更低价格。", tags: ["工厂直供", "拼团优惠", "实惠好货"] },
-      { platform: "amazon", name: t("enhancer.amazon"), title: "Premium Quality Product", description: "High-quality materials, excellent craftsmanship. Perfect for everyday use.", tags: ["Premium", "High Quality", "Best Seller"] },
-      { platform: "shopee", name: t("enhancer.shopee"), title: "Barang Berkualitas Premium", description: "Produk berkualitas tinggi dengan harga terjangkau.", tags: ["Premium Quality", "Fast Shipping", "Best Deals"] },
-      { platform: "social", name: t("enhancer.social"), title: "This product is absolutely amazing! 🤩", description: "Just got my hands on this incredible product and I'm already in love!", tags: ["MustHave", "ProductReview", "Lifestyle"] }
-    ];
-
-    setProcessedResults({
-      platformContents: platforms.map(p => ({ ...p, image: productImage }))
-    });
-
-    setCurrentStep("result");
-    setIsProcessing(false);
-    showSuccess(t("toast.processingComplete"));
   };
 
   const processImage = async () => {
@@ -567,10 +612,49 @@ const Enhancer = () => {
               </Button>
               <div className="flex items-center space-x-2"><Logo /></div>
             </div>
-            <LanguageSwitcher />
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowConfig(!showConfig)}
+                className="flex items-center gap-2"
+              >
+                <Settings className="w-4 h-4" />
+                <span className="hidden sm:inline">Cloudinary</span>
+              </Button>
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       </header>
+
+      {showConfig && (
+        <div className="bg-white border-b shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-sm font-medium mb-1 block">Cloud Name</Label>
+                <Input 
+                  value={cloudinaryConfig.cloudName}
+                  onChange={(e) => setCloudinaryConfig(prev => ({ ...prev, cloudName: e.target.value }))}
+                  placeholder="your-cloud-name"
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium mb-1 block">Upload Preset (Unsigned)</Label>
+                <Input 
+                  value={cloudinaryConfig.uploadPreset}
+                  onChange={(e) => setCloudinaryConfig(prev => ({ ...prev, uploadPreset: e.target.value }))}
+                  placeholder="your-unsigned-preset"
+                />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              获取配置：登录 Cloudinary → Dashboard 获取 Cloud Name → Settings → Upload → 创建 Unsigned Upload Preset
+            </p>
+          </div>
+        </div>
+      )}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
