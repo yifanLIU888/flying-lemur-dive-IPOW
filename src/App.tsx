@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Enhancer from "./pages/Enhancer";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
+// Update app name in the header
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
