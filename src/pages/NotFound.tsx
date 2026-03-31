@@ -6,12 +6,12 @@ const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Log security-relevant information
+    // Log minimal security-relevant information only
     console.error("404 Error: User attempted to access non-existent route:", {
       path: location.pathname,
-      timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent,
-      referrer: document.referrer
+      // Intentionally omit referrer to avoid potential PII/leakage
+      // Intentionally omit user agent to reduce data collection
+      timestamp: new Date().toISOString()
     });
   }, [location.pathname]);
 

@@ -1,17 +1,19 @@
 /**
  * Cloudinary 图像处理工具
- * 使用 Unsigned Upload Preset 实现安全的前端上传
+ * IMPORTANT: Users must provide their own Cloudinary credentials via environment variables
  *
- * SECURITY NOTE:
- * - This is a CLIENT-SIDE ONLY configuration
- * - Users provide their own Cloudinary credentials
- * - No API keys are stored in the codebase
- * - For production, users should create their own Cloudinary account
+ * Security Notes:
+ * - NEVER commit real API credentials to source control
+ * - Use environment variables for all sensitive configuration
+ * - For Vercel deployment, set environment variables in the dashboard
  *
- * If you need to use a backend service:
- * 1. Create a server endpoint that handles uploads
- * 2. Store Cloudinary credentials in server environment variables
- * 3. Never expose API keys in client-side code
+ * Setup Instructions:
+ * 1. Create a Cloudinary account at https://cloudinary.com
+ * 2. Get your Cloud Name from Dashboard
+ * 3. Create an Unsigned Upload Preset in Settings → Upload
+ * 4. Set environment variables:
+ *    - VITE_CLOUDINARY_CLOUD_NAME
+ *    - VITE_CLOUDINARY_UPLOAD_PRESET
  */
 
 export interface CloudinaryConfig {
@@ -19,21 +21,34 @@ export interface CloudinaryConfig {
   uploadPreset: string;
 }
 
-// 默认配置（示例用途 only）
-// 生产环境：用户应提供自己的 Cloudinary 配置
-const DEFAULT_CONFIG: CloudinaryConfig = {
-  cloudName: "demo", // 替换为你的 Cloud Name
-  uploadPreset: "ml_default" // 替换为你的 Unsigned Upload Preset
+/**
+ * Get Cloudinary configuration from environment variables
+ * Throws error if not configured
+ */
+export const getCloudinaryConfig = (): CloudinaryConfig => {
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+  if (!cloudName || !uploadPreset) {
+    throw new Error(
+      'Cloudinary credentials not configured. Please set VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET environment variables. ' +
+      'See src/utils/cloudinary.ts for setup instructions.'
+    );
+  }
+
+  return {
+    cloudName,
+    uploadPreset
+  };
 };
 
 /**
- * 上传图片到 Cloudinary
- * IMPORTANT: In production, this should be done through a backend proxy
- * to protect against abuse and to implement proper rate limiting
+ * Upload image to Cloudinary
+ * Uses unsigned upload with user-provided preset
  */
 export const uploadToCloudinary = async (
   file: File,
-  config: CloudinaryConfig = DEFAULT_CONFIG
+  config: CloudinaryConfig
 ): Promise<string> => {
   // Client-side validation
   if (!file.type.startsWith('image/')) {
@@ -66,20 +81,19 @@ export const uploadToCloudinary = async (
 };
 
 /**
- * 生成 Cloudinary 转换 URL
- * 支持多种图像处理操作
+ * Generate Cloudinary transformation URL
  */
 export const generateTransformedUrl = (
   publicId: string,
   transformations: string[],
-  config: CloudinaryConfig = DEFAULT_CONFIG
+  config: CloudinaryConfig
 ): string => {
   const transformString = transformations.join(",");
   return `https://res.cloudinary.com/${config.cloudName}/image/upload/${transformString}/${publicId}`;
 };
 
 /**
- * 提取 Cloudinary URL 中的 public_id
+ * Extract public_id from Cloudinary URL
  */
 export const extractPublicId = (url: string): string => {
   const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[a-z]+)?$/);
@@ -87,14 +101,11 @@ export const extractPublicId = (url: string): string => {
 };
 
 /**
- * 预设转换配置
+ * Preset transformation configurations
  */
 export const TRANSFORMATIONS = {
-  // 高质量优化
   highQuality: ["q_auto:best", "f_auto", "c_fill"],
-  // 标准优化
   standard: ["q_auto:good", "f_auto", "c_fill"],
-  // 缩略图
   thumbnail: (width: number, height: number) => [
     `w_${width}`,
     `h_${height}`,
@@ -102,9 +113,7 @@ export const TRANSFORMATIONS = {
     "q_auto",
     "f_auto",
   ],
-  // 背景移除（需要 Cloudinary AI 插件）
   removeBackground: ["e_background_removal"],
-  // 智能裁剪
   smartCrop: (width: number, height: number) => [
     `w_${width}`,
     `h_${height}`,

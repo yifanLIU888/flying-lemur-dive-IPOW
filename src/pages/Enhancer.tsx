@@ -28,7 +28,8 @@ import {
   Monitor,
   Sparkles,
   Download,
-  Settings
+  Settings,
+  AlertTriangle
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -36,6 +37,7 @@ import { showSuccess, showError } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/logo";
 import { 
+  getCloudinaryConfig,
   uploadToCloudinary, 
   generateTransformedUrl, 
   extractPublicId,
@@ -94,12 +96,22 @@ const Enhancer = () => {
     preserveColors: false
   });
 
-  // Cloudinary 配置
-  const [cloudinaryConfig, setCloudinaryConfig] = useState<CloudinaryConfig>({
-    cloudName: "demo",
-    uploadPreset: "ml_default"
-  });
+  // Cloudinary configuration state
+  const [cloudinaryConfig, setCloudinaryConfig] = useState<CloudinaryConfig | null>(null);
+  const [configError, setConfigError] = useState<string | null>(null);
   const [showConfig, setShowConfig] = useState(false);
+
+  // Check Cloudinary configuration on mount
+  useEffect(() => {
+    try {
+      const config = getCloudinaryConfig();
+      setCloudinaryConfig(config);
+      setConfigError(null);
+    } catch (error) {
+      setConfigError(error instanceof Error ? error.message : "Cloudinary configuration missing");
+      setCloudinaryConfig(null);
+    }
+  }, []);
 
   useEffect(() => {
     setCurrentStep("upload");
@@ -174,20 +186,16 @@ const Enhancer = () => {
   }, []);
 
   const processMultiview = async () => {
-    if (!uploadedImage) return;
+    if (!uploadedImage || !cloudinaryConfig) return;
     setIsProcessing(true);
     setCurrentStep("processing");
     setProcessingProgress(0);
 
     try {
-      // 模拟上传到 Cloudinary（实际使用时取消注释）
-      // const file = await fetch(uploadedImage).then(r => r.blob());
-      // const cloudinaryUrl = await uploadToCloudinary(new File([file], "person.jpg", { type: "image/jpeg" }), cloudinaryConfig);
-      // const publicId = extractPublicId(cloudinaryUrl);
-      
-      // 使用 Cloudinary URL 转换生成多角度视图
-      // 注意：这里使用示例 public_id，实际应使用上传后返回的 public_id
-      const publicId = "sample"; 
+      // Upload image to Cloudinary
+      const file = await fetch(uploadedImage).then(r => r.blob());
+      const cloudinaryUrl = await uploadToCloudinary(new File([file], "person.jpg", { type: "image/jpeg" }), cloudinaryConfig);
+      const publicId = extractPublicId(cloudinaryUrl);
       
       setProcessingProgress(25);
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -203,15 +211,15 @@ const Enhancer = () => {
       setCurrentStep("result");
       showSuccess(t("toast.processingComplete"));
     } catch (error) {
-      showError("Processing failed. Please check your Cloudinary configuration.");
-      console.error(error);
+      showError(error instanceof Error ? error.message : "Processing failed. Please check your Cloudinary configuration.");
+      console.error("Multiview processing error:", error);
     } finally {
       setIsProcessing(false);
     }
   };
 
   const processTryon = async () => {
-    if (!uploadedImage || !garmentImage) return;
+    if (!uploadedImage || !garmentImage || !cloudinaryConfig) return;
     setIsProcessing(true);
     setCurrentStep("processing");
     setProcessingProgress(0);
@@ -220,7 +228,8 @@ const Enhancer = () => {
       setProcessingProgress(25);
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      // 模拟虚拟试穿结果
+      // In a real implementation, you would upload both images and use Cloudinary's
+      // background removal or a dedicated AI service for virtual try-on
       const publicId = "fashion/sample";
       
       setProcessedResults({
@@ -234,15 +243,15 @@ const Enhancer = () => {
       setCurrentStep("result");
       showSuccess(t("toast.processingComplete"));
     } catch (error) {
-      showError("Processing failed. Please check your Cloudinary configuration.");
-      console.error(error);
+      showError(error instanceof Error ? error.message : "Processing failed. Please check your Cloudinary configuration.");
+      console.error("Try-on processing error:", error);
     } finally {
       setIsProcessing(false);
     }
   };
 
   const processCrossPlatform = async () => {
-    if (!productImage) return;
+    if (!productImage || !cloudinaryConfig) return;
     setIsProcessing(true);
     setCurrentStep("processing");
     setProcessingProgress(0);
@@ -273,8 +282,8 @@ const Enhancer = () => {
       setCurrentStep("result");
       showSuccess(t("toast.processingComplete"));
     } catch (error) {
-      showError("Processing failed. Please check your Cloudinary configuration.");
-      console.error(error);
+      showError(error instanceof Error ? error.message : "Processing failed. Please check your Cloudinary configuration.");
+      console.error("Cross-platform processing error:", error);
     } finally {
       setIsProcessing(false);
     }
@@ -635,7 +644,36 @@ const Enhancer = () => {
         </div>
       </header>
 
-      {showConfig && (
+      {/* Configuration Warning */}
+      {configError && (
+        <div className="bg-amber-50 border-b border-amber-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h4 className="font-semibold text-amber-900 mb-1">Cloudinary Configuration Required</h4>
+                <p className="text-sm text-amber-800 mb-3">{configError}</p>
+                <div className="bg-white rounded-lg p-4 border border-amber-200">
+                  <p className="text-sm text-gray-700 mb-2 font-medium">Setup Instructions:</p>
+                  <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                    <li>Create a Cloudinary account at <a href="https://cloudinary.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">cloudinary.com</a></li>
+                    <li>Get your Cloud Name from the Dashboard</li>
+                    <li>Create an Unsigned Upload Preset in Settings → Upload</li>
+                    <li>Set environment variables in your deployment:
+                      <code className="block mt-2 bg-gray-100 p-2 rounded text-xs font-mono">
+                        VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name<br/>
+                        VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
+                      </code>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showConfig && cloudinaryConfig && (
         <div className="bg-white border-b shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -643,7 +681,7 @@ const Enhancer = () => {
                 <Label className="text-sm font-medium mb-1 block">Cloud Name</Label>
                 <Input 
                   value={cloudinaryConfig.cloudName}
-                  onChange={(e) => setCloudinaryConfig(prev => ({ ...prev, cloudName: e.target.value }))}
+                  onChange={(e) => setCloudinaryConfig(prev => prev ? { ...prev, cloudName: e.target.value } : null)}
                   placeholder="your-cloud-name"
                 />
               </div>
@@ -651,72 +689,90 @@ const Enhancer = () => {
                 <Label className="text-sm font-medium mb-1 block">Upload Preset (Unsigned)</Label>
                 <Input 
                   value={cloudinaryConfig.uploadPreset}
-                  onChange={(e) => setCloudinaryConfig(prev => ({ ...prev, uploadPreset: e.target.value }))}
+                  onChange={(e) => setCloudinaryConfig(prev => prev ? { ...prev, uploadPreset: e.target.value } : null)}
                   placeholder="your-unsigned-preset"
                 />
               </div>
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              获取配置：登录 Cloudinary → Dashboard 获取 Cloud Name → Settings → Upload → 创建 Unsigned Upload Preset
+              Note: For production, set these as environment variables instead of using this UI.
             </p>
           </div>
         </div>
       )}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <Tabs value={activeMode} onValueChange={(value) => setActiveMode(value as FeatureMode)} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 rounded-full p-1 bg-white/80 backdrop-blur-sm">
-              <TabsTrigger value="multiview" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-                <User className="w-4 h-4 mr-2" />{t("enhancer.3dModelGen")}
-              </TabsTrigger>
-              <TabsTrigger value="tryon" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white">
-                <Shirt className="w-4 h-4 mr-2" />{t("enhancer.virtualTryOn")}
-              </TabsTrigger>
-              <TabsTrigger value="crossplatform" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-blue-600 data-[state=active]:text-white">
-                <Globe className="w-4 h-4 mr-2" />{t("enhancer.crossPlatform")}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <p className="text-center text-gray-600 mt-3 text-sm">{getModeDescription(activeMode)}</p>
-        </div>
-
-        {currentStep === "upload" && renderUploadStep()}
-        {currentStep === "processing" && renderProcessingStep()}
-        {currentStep === "result" && renderResultStep()}
-
-        {currentStep === "upload" && (
-          <div className="max-w-3xl mx-auto mt-8">
-            <Card className="border-0 bg-white/80 backdrop-blur-sm shadow-xl">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center"><Wand2 className="w-5 h-5 mr-2 text-blue-600" />{t("enhancer.processingOptions")}</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="enhanceDetails" className="flex items-center cursor-pointer"><Sparkles className="w-4 h-4 mr-2 text-blue-600" />{t("enhancer.enhanceDetails")}</Label>
-                    <Switch id="enhanceDetails" checked={options.enhanceDetails} onCheckedChange={(checked) => updateOption('enhanceDetails', checked)} />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="smoothEdges" className="flex items-center cursor-pointer"><Contrast className="w-4 h-4 mr-2 text-purple-600" />{t("enhancer.smoothEdges")}</Label>
-                    <Switch id="smoothEdges" checked={options.smoothEdges} onCheckedChange={(checked) => updateOption('smoothEdges', checked)} />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="preserveColors" className="flex items-center cursor-pointer"><Palette className="w-4 h-4 mr-2 text-pink-600" />{t("enhancer.preserveColors")}</Label>
-                    <Switch id="preserveColors" checked={options.preserveColors} onCheckedChange={(checked) => updateOption('preserveColors', checked)} />
-                  </div>
-                  <div className="border-t pt-4">
-                    <Label className="text-sm font-semibold text-gray-700 mb-2 block flex items-center"><Monitor className="w-4 h-4 mr-2" />{t("enhancer.outputQuality")}</Label>
-                    <div className="flex gap-2">
-                      {(['standard', 'hd', 'ultra'] as const).map(quality => (
-                        <Button key={quality} onClick={() => updateOption('quality', quality)} variant={options.quality === quality ? "default" : "outline"} size="sm" className="rounded-full capitalize">
-                          {t(`enhancer.${quality}`)}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {configError && (
+          <div className="text-center py-12">
+            <div className="max-w-2xl mx-auto">
+              <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-6">
+                <AlertTriangle className="w-10 h-10 text-amber-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Configuration Required</h2>
+              <p className="text-gray-600 mb-6">
+                This application requires Cloudinary credentials to function. Please configure your credentials as described above.
+              </p>
+            </div>
           </div>
+        )}
+
+        {!configError && (
+          <>
+            <div className="mb-8">
+              <Tabs value={activeMode} onValueChange={(value) => setActiveMode(value as FeatureMode)} className="w-full">
+                <TabsList className="grid w-full grid-cols-3 rounded-full p-1 bg-white/80 backdrop-blur-sm">
+                  <TabsTrigger value="multiview" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
+                    <User className="w-4 h-4 mr-2" />{t("enhancer.3dModelGen")}
+                  </TabsTrigger>
+                  <TabsTrigger value="tryon" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white">
+                    <Shirt className="w-4 h-4 mr-2" />{t("enhancer.virtualTryOn")}
+                  </TabsTrigger>
+                  <TabsTrigger value="crossplatform" className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-blue-600 data-[state=active]:text-white">
+                    <Globe className="w-4 h-4 mr-2" />{t("enhancer.crossPlatform")}
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <p className="text-center text-gray-600 mt-3 text-sm">{getModeDescription(activeMode)}</p>
+            </div>
+
+            {currentStep === "upload" && renderUploadStep()}
+            {currentStep === "processing" && renderProcessingStep()}
+            {currentStep === "result" && renderResultStep()}
+
+            {currentStep === "upload" && (
+              <div className="max-w-3xl mx-auto mt-8">
+                <Card className="border-0 bg-white/80 backdrop-blur-sm shadow-xl">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center"><Wand2 className="w-5 h-5 mr-2 text-blue-600" />{t("enhancer.processingOptions")}</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="enhanceDetails" className="flex items-center cursor-pointer"><Sparkles className="w-4 h-4 mr-2 text-blue-600" />{t("enhancer.enhanceDetails")}</Label>
+                        <Switch id="enhanceDetails" checked={options.enhanceDetails} onCheckedChange={(checked) => updateOption('enhanceDetails', checked)} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="smoothEdges" className="flex items-center cursor-pointer"><Contrast className="w-4 h-4 mr-2 text-purple-600" />{t("enhancer.smoothEdges")}</Label>
+                        <Switch id="smoothEdges" checked={options.smoothEdges} onCheckedChange={(checked) => updateOption('smoothEdges', checked)} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="preserveColors" className="flex items-center cursor-pointer"><Palette className="w-4 h-4 mr-2 text-pink-600" />{t("enhancer.preserveColors")}</Label>
+                        <Switch id="preserveColors" checked={options.preserveColors} onCheckedChange={(checked) => updateOption('preserveColors', checked)} />
+                      </div>
+                      <div className="border-t pt-4">
+                        <Label className="text-sm font-semibold text-gray-700 mb-2 block flex items-center"><Monitor className="w-4 h-4 mr-2" />{t("enhancer.outputQuality")}</Label>
+                        <div className="flex gap-2">
+                          {(['standard', 'hd', 'ultra'] as const).map(quality => (
+                            <Button key={quality} onClick={() => updateOption('quality', quality)} variant={options.quality === quality ? "default" : "outline"} size="sm" className="rounded-full capitalize">
+                              {t(`enhancer.${quality}`)}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </>
         )}
       </main>
 
