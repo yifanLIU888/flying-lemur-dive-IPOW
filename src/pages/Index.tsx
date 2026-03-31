@@ -1,10 +1,16 @@
+"use client";
+
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import NewsletterSignup from "@/components/newsletter";
+import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const Index = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-purple-50">
       {/* Navigation */}
@@ -21,18 +27,22 @@ const Index = () => {
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                Features
+                {t("nav.features")}
               </a>
               <a href="#how-it-works" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                How It Works
+                {t("nav.howItWorks")}
               </a>
               <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                Pricing
+                {t("nav.pricing")}
               </a>
+              <LanguageSwitcher />
               <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full">
-                Get Started Free
+                {t("nav.getStarted")}
               </Button>
             </nav>
+            <div className="md:hidden flex items-center gap-2">
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       </header>
@@ -41,24 +51,23 @@ const Index = () => {
         {/* Hero Section */}
         <section className="text-center mb-20">
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6">
-            ✨ Powered by Advanced AI
+            {t("hero.badge")}
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Transform Your Photos with
+            {t("hero.title1")}
             <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              AI Magic
+              {t("hero.title2")}
             </span>
           </h1>
           <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Unlock the full potential of your images with our cutting-edge AI technology.
-            Enhance quality, remove backgrounds, and restore old photos in seconds.
+            {t("hero.description")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all">
-              Start Enhancing Now
+              {t("hero.startNow")}
             </Button>
             <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-lg border-2">
-              Watch Demo
+              {t("hero.watchDemo")}
             </Button>
           </div>
         </section>
@@ -67,48 +76,48 @@ const Index = () => {
         <section id="features" className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Powerful AI Features
+              {t("features.title")}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Everything you need to make your photos look professional
+              {t("features.subtitle")}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
-                title: "Smart Enhancement",
-                description: "AI automatically adjusts lighting, color, and sharpness for professional results",
+                title: t("feature.smartEnhancement.title"),
+                description: t("feature.smartEnhancement.desc"),
                 icon: "✨",
                 color: "from-blue-500 to-blue-600"
               },
               {
-                title: "Background Remover",
-                description: "Instantly remove backgrounds with pixel-perfect accuracy",
+                title: t("feature.backgroundRemover.title"),
+                description: t("feature.backgroundRemover.desc"),
                 icon: "🎯",
                 color: "from-purple-500 to-purple-600"
               },
               {
-                title: "Photo Restorer",
-                description: "Restore old, damaged photos to their former glory",
+                title: t("feature.photoRestorer.title"),
+                description: t("feature.photoRestorer.desc"),
                 icon: "🔧",
                 color: "from-pink-500 to-pink-600"
               },
               {
-                title: "Upscale & Enlarge",
-                description: "Increase image resolution without losing quality",
+                title: t("feature.upscale.title"),
+                description: t("feature.upscale.desc"),
                 icon: "🔍",
                 color: "from-green-500 to-green-600"
               },
               {
-                title: "Color Correction",
-                description: "Fix white balance and color issues automatically",
+                title: t("feature.colorCorrection.title"),
+                description: t("feature.colorCorrection.desc"),
                 icon: "🎨",
                 color: "from-yellow-500 to-yellow-600"
               },
               {
-                title: "Noise Reduction",
-                description: "Remove grain and noise for clean, professional images",
+                title: t("feature.noiseReduction.title"),
+                description: t("feature.noiseReduction.desc"),
                 icon: "🌙",
                 color: "from-indigo-500 to-indigo-600"
               }
@@ -130,31 +139,31 @@ const Index = () => {
         <section id="testimonials" className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              What Our Users Say
+              {t("testimonials.title")}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Real feedback from satisfied customers
+              {t("testimonials.subtitle")}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                name: "Sarah Johnson",
-                role: "Photographer",
-                quote: "Picsetai transformed my portfolio photos from good to stunning. The AI enhancements are incredible!",
+                name: t("testimonial.sarah.name"),
+                role: t("testimonial.sarah.role"),
+                quote: t("testimonial.sarah.quote"),
                 avatar: "https://picsum.photos/60/60?random=1"
               },
               {
-                name: "Michael Chen",
-                role: "E-commerce Manager",
-                quote: "The background removal feature saved me hours of editing time. Highly recommended!",
+                name: t("testimonial.michael.name"),
+                role: t("testimonial.michael.role"),
+                quote: t("testimonial.michael.quote"),
                 avatar: "https://picsum.photos/60/60?random=2"
               },
               {
-                name: "Emily Davis",
-                role: "Social Media Manager",
-                quote: "I love how easy it is to upscale my Instagram photos. The quality is amazing!",
+                name: t("testimonial.emily.name"),
+                role: t("testimonial.emily.role"),
+                quote: t("testimonial.emily.quote"),
                 avatar: "https://picsum.photos/60/60?random=3"
               }
             ].map((testimonial, index) => (
@@ -180,10 +189,10 @@ const Index = () => {
         <section id="how-it-works" className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              How It Works
+              {t("howItWorks.title")}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Three simple steps to transform your photos
+              {t("howItWorks.subtitle")}
             </p>
           </div>
           
@@ -194,20 +203,20 @@ const Index = () => {
             {[
               {
                 step: "1",
-                title: "Upload",
-                description: "Select or drag & drop your image",
+                title: t("step.upload.title"),
+                description: t("step.upload.desc"),
                 color: "blue"
               },
               {
                 step: "2",
-                title: "Process",
-                description: "AI analyzes and enhances automatically",
+                title: t("step.process.title"),
+                description: t("step.process.desc"),
                 color: "purple"
               },
               {
                 step: "3",
-                title: "Download",
-                description: "Get your enhanced image instantly",
+                title: t("step.download.title"),
+                description: t("step.download.desc"),
                 color: "pink"
               }
             ].map((item, index) => (
@@ -228,10 +237,10 @@ const Index = () => {
         <section className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              See the Difference
+              {t("beforeAfter.title")}
             </h2>
             <p className="text-lg text-gray-600">
-              Real results from real users
+              {t("beforeAfter.subtitle")}
             </p>
           </div>
           
@@ -244,7 +253,7 @@ const Index = () => {
                 </div>
               </div>
               <CardContent className="p-4 bg-white">
-                <p className="text-center font-medium text-gray-700">Original Image</p>
+                <p className="text-center font-medium text-gray-700">{t("beforeAfter.before")}</p>
               </CardContent>
             </Card>
             
@@ -256,7 +265,7 @@ const Index = () => {
                 </div>
               </div>
               <CardContent className="p-4 bg-white">
-                <p className="text-center font-medium text-gray-700">Enhanced Result</p>
+                <p className="text-center font-medium text-gray-700">{t("beforeAfter.after")}</p>
               </CardContent>
             </Card>
           </div>
@@ -266,50 +275,50 @@ const Index = () => {
         <section id="pricing" className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Simple, Transparent Pricing
+              {t("pricing.title")}
             </h2>
             <p className="text-lg text-gray-600">
-              Choose the plan that fits your needs
+              {t("pricing.subtitle")}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
               {
-                name: "Free",
+                name: t("plan.free.name"),
                 price: "$0",
-                period: "forever",
+                period: t("plan.free.period"),
                 features: [
-                  "10 images per month",
-                  "Basic enhancements",
-                  "Standard quality",
-                  "Email support"
+                  t("plan.free.feature1"),
+                  t("plan.free.feature2"),
+                  t("plan.free.feature3"),
+                  t("plan.free.feature4")
                 ],
                 highlighted: false
               },
               {
-                name: "Pro",
+                name: t("plan.pro.name"),
                 price: "$19",
-                period: "/month",
+                period: t("plan.pro.period"),
                 features: [
-                  "Unlimited images",
-                  "All AI features",
-                  "HD quality output",
-                  "Priority support",
-                  "API access"
+                  t("plan.pro.feature1"),
+                  t("plan.pro.feature2"),
+                  t("plan.pro.feature3"),
+                  t("plan.pro.feature4"),
+                  t("plan.pro.feature5")
                 ],
                 highlighted: true
               },
               {
-                name: "Enterprise",
+                name: t("plan.enterprise.name"),
                 price: "Custom",
-                period: "",
+                period: t("plan.enterprise.period"),
                 features: [
-                  "Everything in Pro",
-                  "Custom AI models",
-                  "SLA guarantee",
-                  "Dedicated support",
-                  "On-premise option"
+                  t("plan.enterprise.feature1"),
+                  t("plan.enterprise.feature2"),
+                  t("plan.enterprise.feature3"),
+                  t("plan.enterprise.feature4"),
+                  t("plan.enterprise.feature5")
                 ],
                 highlighted: false
               }
@@ -332,7 +341,7 @@ const Index = () => {
                   <Button 
                     className={`w-full ${plan.highlighted ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700' : 'bg-gray-900 hover:bg-gray-800'} text-white rounded-full`}
                   >
-                    Get Started
+                    {t("pricing.getStarted")}
                   </Button>
                 </CardContent>
               </Card>
@@ -346,17 +355,17 @@ const Index = () => {
             <div className="absolute inset-0 bg-black/20"></div>
             <div className="relative z-10 max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Ready to Transform Your Photos?
+                {t("cta.title")}
               </h2>
               <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
-                Join 100,000+ users who have already enhanced millions of photos with our AI
+                {t("cta.description")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 rounded-full px-8 py-6 text-lg shadow-xl">
-                  Start Free Trial
+                  {t("cta.freeTrial")}
                 </Button>
                 <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg">
-                  Schedule Demo
+                  {t("cta.scheduleDemo")}
                 </Button>
               </div>
             </div>
@@ -389,7 +398,7 @@ const Index = () => {
                 <h3 className="text-lg font-bold text-white">Picsetai</h3>
               </div>
               <p className="text-sm text-gray-400 mb-4">
-                AI-powered image enhancement made simple. Transform your photos in seconds.
+                {t("footer.description")}
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">Twitter</a>
@@ -399,44 +408,44 @@ const Index = () => {
             </div>
             
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Product</h4>
+              <h4 className="text-sm font-semibold text-white mb-4">{t("footer.product")}</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Integrations</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.features")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.pricing")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.api")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.integrations")}</a></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Company</h4>
+              <h4 className="text-sm font-semibold text-white mb-4">{t("footer.company")}</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.about")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.blog")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.careers")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.contact")}</a></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
+              <h4 className="text-sm font-semibold text-white mb-4">{t("footer.legal")}</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Cookies</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">GDPR</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.privacy")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.terms")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.cookies")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footer.gdpr")}</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400 mb-4 md:mb-0">
-              © 2024 Picsetai. All rights reserved.
+              © 2024 Picsetai. {t("footer.rights")}.
             </p>
             <div className="flex items-center space-x-2 text-sm text-gray-400">
-              <span>Made with</span>
+              <span>{t("footer.madeWith")}</span>
               <span className="text-red-500">❤️</span>
-              <span>by Dyad</span>
+              <span>{t("footer.by")}</span>
             </div>
           </div>
         </div>
