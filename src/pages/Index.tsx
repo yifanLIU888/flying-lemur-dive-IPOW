@@ -9,10 +9,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/logo";
+import VideoModal from "@/components/VideoModal";
+import { useState } from "react";
 
 const Index = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-purple-50">
@@ -71,7 +74,12 @@ const Index = () => {
             >
               {t("hero.startNow")}
             </Button>
-            <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-lg border-2">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="rounded-full px-8 py-6 text-lg border-2"
+              onClick={() => setIsVideoOpen(true)}
+            >
               {t("hero.watchDemo")}
             </Button>
           </div>
@@ -372,7 +380,12 @@ const Index = () => {
                 >
                   {t("cta.freeTrial")}
                 </Button>
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-white text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg"
+                  onClick={() => setIsVideoOpen(true)}
+                >
                   {t("cta.scheduleDemo")}
                 </Button>
               </div>
@@ -394,6 +407,9 @@ const Index = () => {
           </div>
         </section>
       </main>
+
+      {/* Video Modal */}
+      <VideoModal isOpen={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
 
       <footer className="bg-gray-900 text-gray-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
