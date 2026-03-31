@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { showSuccess, showError } from "@/utils/toast";
 import { useState } from "react";
-import { validateEmail, sanitizeString } from "@/utils/security";
+import { validateEmail, sanitizeString, checkRateLimit } from "@/utils/security";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const NewsletterSignup = () => {
