@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { showSuccess } from "@/utils/toast";
 
 const NewsletterSignup = () => {
   const { toast } = useToast();
@@ -7,7 +8,7 @@ const NewsletterSignup = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Placeholder for actual newsletter signup logic
-    toast.success("Thank you for subscribing!");
+    showSuccess("Thank you for subscribing!");
   };
 
   return (
